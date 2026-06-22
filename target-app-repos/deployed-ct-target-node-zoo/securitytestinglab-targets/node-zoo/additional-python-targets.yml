@@ -1,0 +1,20 @@
+services:
+  django-nv:
+    build:
+      context: ./django-nv
+      dockerfile: Dockerfile.securitytestinglab
+    image: securitytestinglab/django-nv-target:local
+    container_name: securitytestinglab-django-nv
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18123:8000"
+
+  vulpy:
+    build:
+      context: ./vulpy
+      dockerfile: Dockerfile.securitytestinglab
+    image: securitytestinglab/vulpy-target:local
+    container_name: securitytestinglab-vulpy
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18124:5000"

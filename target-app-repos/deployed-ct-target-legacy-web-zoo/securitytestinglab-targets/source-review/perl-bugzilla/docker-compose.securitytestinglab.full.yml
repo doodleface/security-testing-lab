@@ -1,0 +1,52 @@
+services:
+  bugzilla5.web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: /root/docker/startup.sh
+    volumes:
+      - securitytestinglab-bugzilla-data-dir:/var/www/html/data
+      - .:/mnt/sync
+    tmpfs:
+      - /tmp
+      - /run/lock
+    ports:
+      - "18095:80"
+    depends_on:
+      - bugzilla5.db
+    environment:
+      - BZ_ADMIN_EMAIL=admin@bugzilla.test
+      - BZ_ADMIN_PASSWORD=password01!
+      - BZ_ADMIN_REALNAME=Test Admin
+      - BZ_URLBASE=http://10.190.190.96:18095/
+      - BZ_DB_HOST=bugzilla5.db
+      - BZ_DB_PORT=3306
+      - BZ_DB_USER=bugs
+      - BZ_DB_NAME=bugs
+      - BZ_DB_PASS=bugzilla
+      - MARIADB_ROOT_HOST=%
+      - MARIADB_ROOT_PASSWORD=bugzilla
+  bugzilla5.db:
+    build:
+      context: .
+      dockerfile: Dockerfile.mariadb
+    volumes:
+      - securitytestinglab-bugzilla-mysql-db:/var/lib/mysql
+    tmpfs:
+      - /tmp
+      - /var/lock
+    environment:
+      - BZ_ADMIN_EMAIL=admin@bugzilla.test
+      - BZ_ADMIN_PASSWORD=password01!
+      - BZ_ADMIN_REALNAME=Test Admin
+      - BZ_URLBASE=http://10.190.190.96:18095/
+      - BZ_DB_HOST=bugzilla5.db
+      - BZ_DB_PORT=3306
+      - BZ_DB_USER=bugs
+      - BZ_DB_NAME=bugs
+      - BZ_DB_PASS=bugzilla
+      - MARIADB_ROOT_HOST=%
+      - MARIADB_ROOT_PASSWORD=bugzilla
+volumes:
+  securitytestinglab-bugzilla-mysql-db:
+  securitytestinglab-bugzilla-data-dir:

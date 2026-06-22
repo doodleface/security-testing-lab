@@ -1,0 +1,14 @@
+{
+  "app_id": "saml-sp-idp-lab",
+  "coverage": "SAML SP/IdP metadata and ACS/SLO shapes for saml_raider and XML security adapter exercise without retaining assertions.",
+  "endpoints": [
+    "/",
+    "/sp/metadata",
+    "/idp/metadata",
+    "/saml/acs",
+    "/saml/slo"
+  ],
+  "name": "SAML SP IdP Lab",
+  "recommended_host": "ct-target-holdout",
+  "runtime_url": "http://10.190.190.95:18175/"
+}

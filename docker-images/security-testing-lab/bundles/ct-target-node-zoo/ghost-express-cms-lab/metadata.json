@@ -1,0 +1,14 @@
+{
+  "app_id": "ghost-express-cms-lab",
+  "coverage": "Node/Express CMS-style content, admin, asset, redirect, and API route coverage distinct from NodeGoat and DVNA.",
+  "endpoints": [
+    "/",
+    "/ghost/api/content/posts",
+    "/ghost/admin/",
+    "/assets/theme.js",
+    "/redirect"
+  ],
+  "name": "Ghost Express CMS Lab",
+  "recommended_host": "ct-target-node-zoo",
+  "runtime_url": "http://10.190.190.97:18177/"
+}

@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.securitytestinglab.source-matched
+    container_name: securitytestinglab-dvna-source-matched
+    ports:
+      - "19090:9090"
+    depends_on:
+      - mysql-db
+    env_file:
+      - ./vars.env
+    restart: unless-stopped
+  mysql-db:
+    image: mysql:5.7
+    container_name: securitytestinglab-dvna-source-matched-mysql
+    expose:
+      - "3306"
+    env_file:
+      - ./vars.env
+    volumes:
+      - dvna_source_matched_mysql:/var/lib/mysql
+    restart: unless-stopped
+volumes:
+  dvna_source_matched_mysql:

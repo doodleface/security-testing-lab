@@ -1,0 +1,13 @@
+FROM python:3.9-slim
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir future && python3 - <<'PY'
+from pathlib import Path
+p=Path('gruyere.py')
+text=p.read_text()
+text=text.replace("server_name = 'localhost'", "server_name = '0.0.0.0'")
+text=text.replace("allowed_ips = ['127.0.0.1']", "allowed_ips = ['127.0.0.1', '10.190.190.90', '10.190.190.91']")
+p.write_text(text)
+PY
+EXPOSE 8008
+CMD ["python3", "gruyere.py"]

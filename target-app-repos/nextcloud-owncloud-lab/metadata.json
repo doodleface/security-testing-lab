@@ -1,0 +1,11 @@
+{
+  "coverage": "File sharing, WebDAV, public-link, sync API, and quota workflow coverage",
+  "host": "ct-target-holdout",
+  "id": "nextcloud-owncloud-lab",
+  "ip": "10.190.190.95",
+  "name": "Nextcloud ownCloud Lab",
+  "platform": "linux",
+  "port": 18207,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/nextcloud/server"
+}

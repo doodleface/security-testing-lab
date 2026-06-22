@@ -1,0 +1,14 @@
+{
+  "app_id": "keycloak-oidc-weak-client",
+  "coverage": "OIDC/Keycloak-like weak client and discovery metadata for OAuth, OIDC, JWT, redirect, and session adapter exercise.",
+  "endpoints": [
+    "/",
+    "/.well-known/openid-configuration",
+    "/realms/securitytestinglab/protocol/openid-connect/auth",
+    "/weak-client/callback",
+    "/jwks"
+  ],
+  "name": "Keycloak Weak OIDC Client Lab",
+  "recommended_host": "ct-target-holdout",
+  "runtime_url": "http://10.190.190.95:18174/"
+}

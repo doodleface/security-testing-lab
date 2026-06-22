@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>CrudePortalDB</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{247ca1a3-3b86-46c9-b470-aa4940a41511}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>CrudePortalDB</RootNamespace>
+    <AssemblyName>CrudePortalDB</AssemblyName>
+    <ModelCollation>1037,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v3.0</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <GenerateCreateScript>True</GenerateCreateScript>
+    <DefaultCollation>Hebrew_CI_AS</DefaultCollation>
+    <AutoUpdateStatisticsAsynchronously>True</AutoUpdateStatisticsAsynchronously>
+    <Recovery>SIMPLE</Recovery>
+    <PageVerify>CHECKSUM</PageVerify>
+    <ReadCommittedSnapshot>True</ReadCommittedSnapshot>
+    <AllowSnapshotIsolation>True</AllowSnapshotIsolation>
+    <DatabaseChaining>True</DatabaseChaining>
+    <Trustworthy>True</Trustworthy>
+    <IsBrokerPriorityHonored>True</IsBrokerPriorityHonored>
+    <ServiceBrokerOption>NewBroker</ServiceBrokerOption>
+    <IncludeSchemaNameInFileName>True</IncludeSchemaNameInFileName>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Tables\" />
+    <Folder Include="Views\" />
+    <Folder Include="Security\" />
+    <Folder Include="Stored Procedures\" />
+    <Folder Include="Scripts" />
+    <Folder Include="Functions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Tables\portal.DataView.sql" />
+    <Build Include="Tables\portal.DataViewAction.sql" />
+    <Build Include="Tables\portal.DataViewChart.sql" />
+    <Build Include="Tables\portal.DataViewField.sql" />
+    <Build Include="Views\portal.DataViewFieldFlags.sql" />
+    <Build Include="Views\portal.DataViewUriStyles.sql" />
+    <Build Include="Views\portal.DataViewFlags.sql" />
+    <Build Include="Views\portal.DataViewFieldTypes.sql" />
+    <Build Include="Views\portal.DataViewChartTypes.sql" />
+    <Build Include="Security\portal.sql" />
+    <Build Include="Tables\portal.Navigation.sql" />
+    <None Include="Security\CrudeLogin.user.sql" />
+    <None Include="Security\RoleMemberships.sql" />
+    <Build Include="Stored Procedures\portal.AutoInitDataViewFields.sql" />
+    <Build Include="Stored Procedures\dbo.usp_Generate_Merge_For_Table.sql" />
+    <Build Include="Stored Procedures\portal.GetDataViewContents.sql" />
+    <Build Include="Functions\portal.FormatValueForJson.sql" />
+    <Build Include="Views\portal.DataViewModifierButtonStyles.sql" />
+    <Build Include="Views\portal.DataViewDataTableFlags.sql" />
+    <Build Include="Views\portal.DataViewPagingTypes.sql" />
+    <Build Include="Functions\portal.GetNavigationRecursive.sql" />
+    <Build Include="Tables\portal.DataViewActionParameters.sql" />
+    <Build Include="Stored Procedures\portal.GetDataViewInfo.sql" />
+    <Build Include="Stored Procedures\portal.GetDataViewContentsCommand.sql" />
+    <Build Include="Stored Procedures\portal.GetDataViewDataTableCommand.sql" />
+    <Build Include="Views\portal.DataViewActionTypes.sql" />
+    <Build Include="Functions\dbo.GetDataViewLabel.sql" />
+    <Build Include="Security\CrudeLogin.login.sql" />
+    <Build Include="Views\portal.UserDataViews.sql" />
+    <Build Include="Views\portal.UserDataViewFields.sql" />
+    <Build Include="Views\portal.UserDataViewActions.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="CrudePortalDB.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CrudePortalDB.local.publish.xml" />
+    <None Include="Scripts\RecursiveFunctions.PostDeployment.sql" />
+    <None Include="CrudePortalDB.DEV2016.publish.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\Script.PostDeployment.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="Scripts\Script.PreDeployment.sql" />
+  </ItemGroup>
+</Project>

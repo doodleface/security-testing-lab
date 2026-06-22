@@ -1,0 +1,20 @@
+services:
+  skf-labs-mini:
+    build:
+      context: ./skf-labs-mini
+      dockerfile: Dockerfile
+    image: securitytestinglab/skf-labs-mini:local
+    container_name: securitytestinglab-skf-labs-mini
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18170:8080"
+
+  portswigger-websec-subset:
+    build:
+      context: ./portswigger-websec-subset
+      dockerfile: Dockerfile
+    image: securitytestinglab/portswigger-websec-subset:local
+    container_name: securitytestinglab-portswigger-websec-subset
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18171:8080"

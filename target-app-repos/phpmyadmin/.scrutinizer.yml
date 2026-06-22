@@ -1,0 +1,22 @@
+# scrutinizer-ci.com configuration
+imports:
+    - javascript
+    - php
+filter:
+    excluded_paths:
+        - build/
+        - js/vendor/
+        - node_modules/
+        - tmp/
+        - vendor/
+checks:
+    javascript: true
+build:
+    dependencies:
+        before:
+            - composer install
+            - composer require tecnickcom/tcpdf pragmarx/google2fa bacon/bacon-qr-code samyoul/u2f-php-server
+    tests:
+        override:
+            - php-scrutinizer-run
+            - phpcs-run

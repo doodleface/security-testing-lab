@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  h2-origin:
+    image: nghttp2/nghttpx:latest
+    container_name: securitytestinglab-h2-origin
+    ports:
+      - "8443:8443"
+    environment:
+      CT_HARNESS_ID: FIX-HARNESS-HTTP2-01
+
+  h2-downgrade-proxy:
+    image: haproxy:2.9
+    container_name: securitytestinglab-h2-downgrade-proxy
+    ports:
+      - "8081:8081"
+    environment:
+      CT_HARNESS_ID: FIX-HARNESS-HTTP2-02
+
+# Canonical purpose:
+# 1. deterministic ALPN and downgrade boundary checks
+# 2. seeded Pack A-C validation for WP32
+# 3. frame-aware replay artifact generation

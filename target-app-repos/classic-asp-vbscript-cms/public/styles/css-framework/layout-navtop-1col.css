@@ -1,0 +1,27 @@
+/* A CSS Framework by Mike Stenhouse of Content with Style */
+
+@import url("nav-horizontal.css");
+
+/* NAV BAR AT THE TOP AND ONE COLUMN OF CONTENT */
+#content {
+  position: relative;
+  width: 766px;
+}
+
+#main {
+  width: auto;
+}
+
+#sub {
+  width: auto;
+}
+
+#local {
+  width: auto;
+}
+
+#nav {
+  width: auto;
+  text-align: right;
+  /*center; right;*/
+}

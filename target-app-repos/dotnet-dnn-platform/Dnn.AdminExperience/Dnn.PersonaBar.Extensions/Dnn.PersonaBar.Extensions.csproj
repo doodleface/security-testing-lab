@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputPath>bin</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <TargetFramework>net48</TargetFramework>
+    <Deterministic>true</Deterministic>
+    <LangVersion>latest</LangVersion>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>CS0618,SA1600</WarningsNotAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Extensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\DNN Platform\DotNetNuke.ContentSecurityPolicy\DotNetNuke.ContentSecurityPolicy.csproj" />
+    <ProjectReference Include="..\..\DotNetNuke.Internal.SourceGenerators\DotNetNuke.Internal.SourceGenerators.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\DNN Platform\DotNetNuke.Abstractions\DotNetNuke.Abstractions.csproj" />
+    <ProjectReference Include="..\..\DNN Platform\DotNetNuke.DependencyInjection\DotNetNuke.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\DNN Platform\DotNetNuke.Instrumentation\DotNetNuke.Instrumentation.csproj" />
+    <ProjectReference Include="..\..\DNN Platform\DotNetNuke.Maintenance\DotNetNuke.Maintenance.csproj" />
+    <ProjectReference Include="..\..\DNN Platform\DotNetNuke.Web.Client\DotNetNuke.Web.Client.csproj" />
+    <ProjectReference Include="..\..\DNN Platform\DotNetNuke.Web\DotNetNuke.Web.csproj" />
+    <ProjectReference Include="..\..\DNN Platform\HttpModules\DotNetNuke.HttpModules.csproj" />
+    <ProjectReference Include="..\..\DNN Platform\Library\DotNetNuke.Library.csproj" />
+    <ProjectReference Include="..\Library\Dnn.PersonaBar.Library\Dnn.PersonaBar.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" Link="stylecop.json" />
+    <Compile Include="..\..\SolutionInfo.cs" Link="SolutionInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="admin\personaBar\Dnn.Extensions\data\ModuleControlTemplate.resources" />
+    <None Remove="Components\ConfigConsole\Schemas\DotNetConfig.xsd" />
+    <None Remove="Components\Security\Resources\*.resources" />
+    <EmbeddedResource Include="admin\personaBar\Dnn.Extensions\data\ModuleControlTemplate.resources" />
+    <EmbeddedResource Include="Components\ConfigConsole\Schemas\DotNetConfig.xsd" />
+    <EmbeddedResource Include="Components\Security\Resources\*.resources" />
+  </ItemGroup>
+
+  <Import Project="Module.build" />
+</Project>

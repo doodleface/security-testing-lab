@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+	<NuspecFile>YAFNET.Web.nuspec</NuspecFile>
+	  <RootNamespace>YAF.Web</RootNamespace>
+	  <AssemblyName>YAF.Web</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="HtmlProperties" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.8" />
+    <PackageReference Include="OEmbed.Core" Version="2.0.6" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.26.0.140279">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YAFNET.Configuration\YAFNET.Configuration.csproj" />
+    <ProjectReference Include="..\YAFNET.Core\YAFNET.Core.csproj" />
+    <ProjectReference Include="..\YAFNET.Types\YAFNET.Types.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,89 @@
+services:
+  securitytestinglab-roundcube-webmail-lab:
+    build:
+      context: ./roundcube-webmail-lab
+    image: securitytestinglab/roundcube-webmail-lab:local
+    container_name: securitytestinglab-roundcube-webmail-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18206:8080"
+    labels:
+      securitytestinglab.app_id: "roundcube-webmail-lab"
+      securitytestinglab.coverage: "Webmail, MIME preview, address-book, attachment, and mail-auth flow coverage"
+  securitytestinglab-nextcloud-owncloud-lab:
+    build:
+      context: ./nextcloud-owncloud-lab
+    image: securitytestinglab/nextcloud-owncloud-lab:local
+    container_name: securitytestinglab-nextcloud-owncloud-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18207:8080"
+    labels:
+      securitytestinglab.app_id: "nextcloud-owncloud-lab"
+      securitytestinglab.coverage: "File sharing, WebDAV, public-link, sync API, and quota workflow coverage"
+  securitytestinglab-gitea-devops-lab:
+    build:
+      context: ./gitea-devops-lab
+    image: securitytestinglab/gitea-devops-lab:local
+    container_name: securitytestinglab-gitea-devops-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18208:8080"
+    labels:
+      securitytestinglab.app_id: "gitea-devops-lab"
+      securitytestinglab.coverage: "Git web UI, webhooks, repo permissions, release artifacts, and issue workflow coverage"
+  securitytestinglab-jenkins-rbac-lab:
+    build:
+      context: ./jenkins-rbac-lab
+    image: securitytestinglab/jenkins-rbac-lab:local
+    container_name: securitytestinglab-jenkins-rbac-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18209:8080"
+    labels:
+      securitytestinglab.app_id: "jenkins-rbac-lab"
+      securitytestinglab.coverage: "CI job configuration, plugin surface, build log metadata, and RBAC workflow coverage"
+  securitytestinglab-grafana-dashboard-lab:
+    build:
+      context: ./grafana-dashboard-lab
+    image: securitytestinglab/grafana-dashboard-lab:local
+    container_name: securitytestinglab-grafana-dashboard-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18210:8080"
+    labels:
+      securitytestinglab.app_id: "grafana-dashboard-lab"
+      securitytestinglab.coverage: "Dashboard, data-source proxy, saved query, and plugin-style route coverage"
+  securitytestinglab-kibana-opensearch-lab:
+    build:
+      context: ./kibana-opensearch-lab
+    image: securitytestinglab/kibana-opensearch-lab:local
+    container_name: securitytestinglab-kibana-opensearch-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18211:8080"
+    labels:
+      securitytestinglab.app_id: "kibana-opensearch-lab"
+      securitytestinglab.coverage: "Saved objects, dashboard APIs, index-pattern, and proxy-style data access coverage"
+  securitytestinglab-grpc-web-demo-lab:
+    build:
+      context: ./grpc-web-demo-lab
+    image: securitytestinglab/grpc-web-demo-lab:local
+    container_name: securitytestinglab-grpc-web-demo-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18212:8080"
+    labels:
+      securitytestinglab.app_id: "grpc-web-demo-lab"
+      securitytestinglab.coverage: "Non-REST API protocol, grpc-web content types, reflection-like metadata, and unary route coverage"
+  securitytestinglab-webauthn-passkey-lab:
+    build:
+      context: ./webauthn-passkey-lab
+    image: securitytestinglab/webauthn-passkey-lab:local
+    container_name: securitytestinglab-webauthn-passkey-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18213:8080"
+    labels:
+      securitytestinglab.app_id: "webauthn-passkey-lab"
+      securitytestinglab.coverage: "Modern browser authentication ceremony, attestation, assertion, and downgrade/misconfiguration coverage"

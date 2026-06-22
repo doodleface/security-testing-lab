@@ -1,0 +1,13 @@
+FROM node:carbon
+WORKDIR /app
+COPY app/ /app/
+RUN printf "%s\n" \
+      "deb http://archive.debian.org/debian stretch main" \
+      "deb http://archive.debian.org/debian-security stretch/updates main" \
+      > /etc/apt/sources.list \
+    && apt-get -o Acquire::Check-Valid-Until=false update \
+    && apt-get install -y --no-install-recommends python make g++ \
+    && rm -rf /var/lib/apt/lists/* \
+    && chmod +x /app/entrypoint.sh \
+    && npm_config_build_from_source=true npm install
+CMD ["bash", "/app/entrypoint.sh"]

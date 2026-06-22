@@ -1,0 +1,11 @@
+{
+  "coverage": "Forum workflows, BBCode rendering, moderation, plugin, and session coverage",
+  "host": "ct-target-legacy-web-zoo",
+  "id": "phpbb-forum-lab",
+  "ip": "10.190.190.96",
+  "name": "phpBB Forum Lab",
+  "platform": "linux",
+  "port": 18204,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/phpbb/phpbb"
+}

@@ -1,0 +1,14 @@
+{
+  "app_id": "python-framework-misconfig-lab",
+  "coverage": "Flask/Django-style route, template, upload, debug-header, and auth/session misconfiguration surfaces beyond Django.nV and Vulpy.",
+  "endpoints": [
+    "/",
+    "/flask/debug",
+    "/django/template",
+    "/upload",
+    "/session/profile"
+  ],
+  "name": "Python Framework Misconfiguration Lab",
+  "recommended_host": "ct-target-node-zoo",
+  "runtime_url": "http://10.190.190.97:18176/"
+}

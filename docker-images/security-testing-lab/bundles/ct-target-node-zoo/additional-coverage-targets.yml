@@ -1,0 +1,20 @@
+services:
+  python-framework-misconfig-lab:
+    build:
+      context: ./python-framework-misconfig-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/python-framework-misconfig-lab:local
+    container_name: securitytestinglab-python-framework-misconfig-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18176:8080"
+
+  ghost-express-cms-lab:
+    build:
+      context: ./ghost-express-cms-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/ghost-express-cms-lab:local
+    container_name: securitytestinglab-ghost-express-cms-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18177:8080"

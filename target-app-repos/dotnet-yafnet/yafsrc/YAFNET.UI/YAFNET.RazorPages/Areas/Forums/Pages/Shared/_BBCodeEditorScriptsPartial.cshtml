@@ -1,0 +1,13 @@
+@using YAF.Core.Context
+
+@inject BoardContext Current
+
+@if (Current.BoardSettings.EnableWysiwygEditor)
+{
+    <script src="~/js/sceditor/sceditor.min.js"></script>
+}
+else
+{
+	@await Html.PartialAsync("_EditorScriptsPartial")
+}
+

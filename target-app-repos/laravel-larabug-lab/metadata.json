@@ -1,0 +1,14 @@
+{
+  "app_id": "laravel-larabug-lab",
+  "coverage": "Laravel-style PHP framework routing, blade template, debug, storage, and CSRF form surfaces distinct from CMS/classic PHP apps.",
+  "endpoints": [
+    "/",
+    "/debug/ignition",
+    "/storage/logs/app.log",
+    "/form/profile",
+    "/api/user/1"
+  ],
+  "name": "Laravel LaraBug Lab",
+  "recommended_host": "ct-target-legacy-web-zoo",
+  "runtime_url": "http://10.190.190.96:18178/"
+}

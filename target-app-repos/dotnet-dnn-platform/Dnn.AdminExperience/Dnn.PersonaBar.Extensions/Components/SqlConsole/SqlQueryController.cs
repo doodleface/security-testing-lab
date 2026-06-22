@@ -1,0 +1,114 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information
+namespace Dnn.PersonaBar.SqlConsole.Components
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Linq;
+
+    using DotNetNuke.Data;
+    using DotNetNuke.Framework;
+
+    public class SqlQueryController : ServiceLocator<ISqlQueryController, SqlQueryController>, ISqlQueryController
+    {
+        /// <inheritdoc />
+        public void AddQuery(SqlQuery query)
+        {
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                rep.Insert(query);
+            }
+        }
+
+        /// <inheritdoc />
+        public void DeleteQuery(SqlQuery query)
+        {
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                rep.Delete(query);
+            }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<SqlQuery> GetQueries()
+        {
+            IEnumerable<SqlQuery> queries;
+
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                queries = rep.Get();
+            }
+
+            return queries;
+        }
+
+        /// <inheritdoc />
+        public SqlQuery GetQuery(int id)
+        {
+            SqlQuery query;
+
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                query = rep.GetById(id);
+            }
+
+            return query;
+        }
+
+        /// <inheritdoc />
+        public SqlQuery GetQuery(string name)
+        {
+            List<SqlQuery> queries;
+            SqlQuery query = null;
+
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                queries = rep.Find("where name = @0", name).ToList();
+                if (queries != null && queries.Count > 0)
+                {
+                    query = queries.ElementAt(0);
+                }
+            }
+
+            return query;
+        }
+
+        /// <inheritdoc />
+        public void UpdateQuery(SqlQuery query)
+        {
+            using (IDataContext ctx = DataContext.Instance())
+            {
+                var rep = ctx.GetRepository<SqlQuery>();
+                rep.Update(query);
+            }
+        }
+
+        /// <inheritdoc />
+        public IList<string> GetConnections()
+        {
+            var connections = new List<string>();
+            foreach (ConnectionStringSettings connection in ConfigurationManager.ConnectionStrings)
+            {
+                if (!connection.Name.Equals("localmysqlserver", StringComparison.OrdinalIgnoreCase) && !connection.Name.Equals("localsqlserver", StringComparison.OrdinalIgnoreCase))
+                {
+                    connections.Add(connection.Name);
+                }
+            }
+
+            return connections;
+        }
+
+        /// <inheritdoc />
+        protected override Func<ISqlQueryController> GetFactory()
+        {
+            return () => new SqlQueryController();
+        }
+    }
+}

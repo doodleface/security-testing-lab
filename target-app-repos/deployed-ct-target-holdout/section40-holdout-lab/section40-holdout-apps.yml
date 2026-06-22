@@ -1,0 +1,39 @@
+version: "2.4"
+
+services:
+  dvga-holdout:
+    image: dolevf/dvga:latest
+    container_name: dvga-holdout
+    restart: unless-stopped
+    environment:
+      - WEB_HOST=0.0.0.0
+      - WEB_PORT=5013
+    ports:
+      - "0.0.0.0:5013:5013"
+
+  webgoat-webwolf:
+    image: webgoat/webgoat:latest
+    container_name: webgoat-webwolf
+    restart: unless-stopped
+    healthcheck:
+      disable: true
+    ports:
+      - "0.0.0.0:8081:8080"
+      - "0.0.0.0:9090:9090"
+    environment:
+      - TZ=UTC
+
+  dvws:
+    image: tssoffsec/dvws:latest
+    container_name: dvws
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8082:80"
+      - "0.0.0.0:8084:8080"
+
+  bwapp:
+    image: raesene/bwapp:latest
+    container_name: bwapp
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8083:80"

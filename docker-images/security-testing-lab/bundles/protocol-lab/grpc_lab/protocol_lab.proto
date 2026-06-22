@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package protocol_lab;
+
+service ProtocolLab {
+  rpc GetAccount(AccountRequest) returns (AccountReply);
+  rpc StreamTenantEvents(TenantRequest) returns (stream Event);
+  rpc ResetPassword(ResetPasswordRequest) returns (ActionReply);
+}
+
+message AccountRequest {
+  string tenant = 1;
+  string username = 2;
+}
+
+message AccountReply {
+  string tenant = 1;
+  string username = 2;
+  string email = 3;
+  string role = 4;
+  string secret_note = 5;
+}
+
+message TenantRequest {
+  string tenant = 1;
+}
+
+message Event {
+  string tenant = 1;
+  string id = 2;
+  string message = 3;
+}
+
+message ResetPasswordRequest {
+  string tenant = 1;
+  string username = 2;
+  string new_password = 3;
+}
+
+message ActionReply {
+  bool ok = 1;
+  string detail = 2;
+}

@@ -1,0 +1,175 @@
+﻿@use "prism";
+
+@use "fontawesome/fontawesome-all";
+
+// Forum imports
+@use "forum/attachments-upload.scss";
+@use "forum/dropdowns.scss";
+@use "forum/cookie-alert.scss";
+@use "forum/button-scroll.scss";
+
+// Main
+#YafBody {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.list-inline {
+    margin: 0;
+}
+
+// Topic Title
+.topic-title {
+    white-space: pre-wrap;
+}
+
+// MultiQuote Button
+.btn-multiquote {
+    display: inline-block;
+    margin-left: 10px !important;
+
+    label {
+        margin-top: -1px;
+    }
+
+    .fa-stack {
+        margin-top: -2px;
+    }
+}
+
+// Similar topic lists
+.list-similar {
+    height: 200px;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+// Scrollable Mobile Dropdowns
+.scrollable-dropdown {
+    height: auto;
+    width: 100%;
+    max-height: 200px;
+    overflow-x: hidden;
+}
+
+// Small Avatars inside Posts
+.img-avatar-sm {
+    max-height: 40px;
+}
+
+.img-navbar-avatar {
+    position: relative;
+    margin-bottom: 0;
+    display: inline-block;
+    min-width: 0.9rem;
+    max-width: 1.2rem;
+    max-height: 1.2rem;
+    font-size: 2rem;
+    vertical-align: middle;
+}
+
+// Thanks Popover
+.popover-body-scrollable {
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.avatar-stack {
+    display: flex;
+
+    .avatar-item {
+        height: 20px;
+        width: 20px;
+        display: inline-block;
+        transition: margin 0.1s ease-in-out;
+
+        & + .avatar-item {
+            margin-left: -10px;
+        }
+
+        &:first-child {
+            z-index: 5;
+        }
+
+        &:nth-child(2) {
+            z-index: 4;
+        }
+
+        &:nth-child(3) {
+            z-index: 3;
+        }
+
+        &:nth-child(4) {
+            z-index: 2;
+        }
+
+        &:last-child {
+            z-index: 1;
+        }
+    }
+
+    &:hover {
+        .avatar-item {
+            margin-left: 0px;
+            margin-right: 8px;
+        }
+    }
+}
+
+// Unread Icon
+.unread {
+    position: absolute;
+    top: 8px;
+    left:16px;
+}
+
+// Attachment Upload
+.preview .img-thumbnail {
+    max-height: 80px;
+    max-width: 80px;
+}
+
+.fileinput-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    height: 100%;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    font-size: 200px !important;
+    direction: ltr;
+    cursor: pointer;
+}
+
+// user medals
+.popover-user {
+    .list-inline {
+        img {
+            max-height: 16px;
+            max-width: 16px;
+        }
+    }
+}
+
+.user-card {
+    width: 300px;
+    height: 90px;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
+    }
+}
+
+.dropdown-mentions {
+    max-height: 200px;
+    margin-bottom: 10px;
+    overflow: scroll;
+}
+
+.lightbox-carousel .active {
+    touch-action: pinch-zoom !important;
+}

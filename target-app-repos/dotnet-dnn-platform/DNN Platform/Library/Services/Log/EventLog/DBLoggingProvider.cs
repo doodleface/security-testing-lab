@@ -1,0 +1,616 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information
+namespace DotNetNuke.Services.Log.EventLog
+{
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Data;
+    using System.Data.SqlClient;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
+    using System.IO;
+    using System.Threading;
+    using System.Web;
+    using System.Web.Caching;
+    using System.Xml;
+
+    using DotNetNuke.Abstractions.Application;
+    using DotNetNuke.Abstractions.Logging;
+    using DotNetNuke.Common;
+    using DotNetNuke.Common.Utilities;
+    using DotNetNuke.Data;
+    using DotNetNuke.Instrumentation;
+    using DotNetNuke.Services.Scheduling;
+
+    using Microsoft.Extensions.DependencyInjection;
+
+    public class DBLoggingProvider : LoggingProvider
+    {
+        public const string LogTypeCacheKey = "LogTypes";
+        public const string LogTypeInfoCacheKey = "GetLogTypeConfigInfo";
+        public const string LogTypeInfoByKeyCacheKey = "GetLogTypeConfigInfoByKey";
+
+        private const int ReaderLockTimeout = 10000;
+        private const int WriterLockTimeout = 10000;
+        private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(DBLoggingProvider));
+        private static readonly List<LogQueueItem> LogQueue = [];
+        private static readonly ReaderWriterLockSlim LockNotif = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim LockQueueLog = new ReaderWriterLockSlim();
+
+        private readonly IHostSettings hostSettings;
+
+        /// <summary>Initializes a new instance of the <see cref="DBLoggingProvider"/> class.</summary>
+        [Obsolete("Deprecated in DotNetNuke 10.2.2. Please use overload with IHostSettings. Scheduled removal in v12.0.0.")]
+        public DBLoggingProvider()
+            : this(null)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="DBLoggingProvider"/> class.</summary>
+        /// <param name="hostSettings">The host settings.</param>
+        public DBLoggingProvider(IHostSettings hostSettings)
+        {
+            this.hostSettings = hostSettings ?? Globals.GetCurrentServiceProvider().GetRequiredService<IHostSettings>();
+        }
+
+        /// <inheritdoc />
+        public override void AddLog(LogInfo logInfo)
+        {
+            ILogInfo theLogInfo = logInfo;
+            string configPortalId = theLogInfo.LogPortalId != Null.NullInteger
+                                        ? theLogInfo.LogPortalId.ToString(CultureInfo.InvariantCulture)
+                                        : "*";
+            var logTypeConfigInfo = this.GetLogTypeConfigInfoByKey(logInfo.LogTypeKey, configPortalId);
+            if (logTypeConfigInfo is not { LoggingIsActive: true, })
+            {
+                return;
+            }
+
+            theLogInfo.LogConfigId = ((ILogTypeConfigInfo)logTypeConfigInfo).Id;
+            var logQueueItem = new LogQueueItem { LogInfo = logInfo, LogTypeConfigInfo = logTypeConfigInfo };
+            var scheduler = SchedulingProvider.Instance();
+            if (scheduler == null || logInfo.BypassBuffering || !SchedulingProvider.Enabled
+                || scheduler.GetScheduleStatus() == ScheduleStatus.STOPPED || !this.hostSettings.EventLogBuffer)
+            {
+                WriteLog(logQueueItem);
+            }
+            else
+            {
+                LogQueue.Add(logQueueItem);
+            }
+        }
+
+        // ReSharper disable once InconsistentNaming
+
+        /// <inheritdoc />
+        public override void AddLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner)
+        {
+            DataProvider.Instance().AddLogType(logTypeKey, logTypeFriendlyName, logTypeDescription, logTypeCSSClass, logTypeOwner);
+            DataCache.RemoveCache(LogTypeCacheKey);
+        }
+
+        /// <inheritdoc />
+        [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", Justification = "Breaking change")]
+        public override void AddLogTypeConfigInfo(string id, bool loggingIsActive, string logTypeKey, string logTypePortalID, string keepMostRecent, string logFileName, bool emailNotificationIsActive, string threshold, string thresholdTime, string thresholdTimeType, string mailFromAddress, string mailToAddress)
+        {
+            int intThreshold = -1;
+            int intThresholdTime = -1;
+            int intThresholdTimeType = -1;
+            int intKeepMostRecent = -1;
+            if (Globals.NumberMatchRegex.IsMatch(threshold))
+            {
+                intThreshold = Convert.ToInt32(threshold, CultureInfo.InvariantCulture);
+            }
+
+            if (Globals.NumberMatchRegex.IsMatch(thresholdTime))
+            {
+                intThresholdTime = Convert.ToInt32(thresholdTime, CultureInfo.InvariantCulture);
+            }
+
+            if (Globals.NumberMatchRegex.IsMatch(thresholdTimeType))
+            {
+                intThresholdTimeType = Convert.ToInt32(thresholdTimeType, CultureInfo.InvariantCulture);
+            }
+
+            if (Globals.NumberMatchRegex.IsMatch(keepMostRecent))
+            {
+                intKeepMostRecent = Convert.ToInt32(keepMostRecent, CultureInfo.InvariantCulture);
+            }
+
+            DataProvider.Instance().AddLogTypeConfigInfo(
+                loggingIsActive,
+                logTypeKey,
+                logTypePortalID,
+                intKeepMostRecent,
+                emailNotificationIsActive,
+                intThreshold,
+                intThresholdTime,
+                intThresholdTimeType,
+                mailFromAddress,
+                mailToAddress);
+            DataCache.RemoveCache(LogTypeInfoCacheKey);
+            DataCache.RemoveCache(LogTypeInfoByKeyCacheKey);
+        }
+
+        /// <inheritdoc />
+        public override void ClearLog()
+        {
+            DataProvider.Instance().ClearLog();
+        }
+
+        /// <inheritdoc />
+        public override void DeleteLog(LogInfo logInfo)
+        {
+            ILogInfo theLogInfo = logInfo;
+            DataProvider.Instance().DeleteLog(theLogInfo.LogGuid);
+        }
+
+        /// <inheritdoc />
+        public override void DeleteLogType(string logTypeKey)
+        {
+            DataProvider.Instance().DeleteLogType(logTypeKey);
+            DataCache.RemoveCache(LogTypeCacheKey);
+        }
+
+        /// <inheritdoc />
+        public override void DeleteLogTypeConfigInfo(string id)
+        {
+            DataProvider.Instance().DeleteLogTypeConfigInfo(id);
+            DataCache.RemoveCache(LogTypeInfoCacheKey);
+            DataCache.RemoveCache(LogTypeInfoByKeyCacheKey);
+        }
+
+        /// <inheritdoc />
+        public override List<LogInfo> GetLogs(int portalID, string logType, int pageSize, int pageIndex, ref int totalRecords)
+        {
+            var logs = new List<LogInfo>();
+            FillLogs(DataProvider.Instance().GetLogs(portalID, logType, pageSize, pageIndex), logs, ref totalRecords);
+            return logs;
+        }
+
+        /// <inheritdoc />
+        public override ArrayList GetLogTypeConfigInfo()
+        {
+            var list = (ArrayList)DataCache.GetCache(LogTypeInfoCacheKey);
+            if (list == null)
+            {
+                IDataReader dr = null;
+                try
+                {
+                    dr = DataProvider.Instance().GetLogTypeConfigInfo();
+                    list = CBO.FillCollection(dr, typeof(LogTypeConfigInfo));
+                    DataCache.SetCache(LogTypeInfoCacheKey, list);
+                    FillLogTypeConfigInfoByKey(list);
+                }
+                finally
+                {
+                    if (dr == null)
+                    {
+                        list = new ArrayList();
+                    }
+                    else
+                    {
+                        CBO.CloseDataReader(dr, true);
+                    }
+                }
+            }
+
+            return list;
+        }
+
+        /// <inheritdoc />
+        public override LogTypeConfigInfo GetLogTypeConfigInfoByID(string id)
+        {
+            return CBO.FillObject<LogTypeConfigInfo>(DataProvider.Instance().GetLogTypeConfigInfoByID(Convert.ToInt32(id, CultureInfo.InvariantCulture)));
+        }
+
+        /// <inheritdoc />
+        public override ArrayList GetLogTypeInfo()
+        {
+            return CBO.GetCachedObject<ArrayList>(
+                this.hostSettings,
+                new CacheItemArgs(LogTypeCacheKey, 20, CacheItemPriority.Normal),
+                _ => CBO.FillCollection(DataProvider.Instance().GetLogTypeInfo(), typeof(LogTypeInfo)));
+        }
+
+        /// <inheritdoc />
+        [Obsolete("Deprecated in DotNetNuke 9.8.0. Use Dependency Injection to resolve 'DotNetNuke.Abstractions.Logging.IEventLogService.GetLog()' instead. Scheduled for removal in v11.0.0.")]
+        public override object GetSingleLog(LogInfo logInfo, ReturnType returnType)
+        {
+            var log = (LogInfo)this.GetLog(logInfo.LogGUID);
+
+            if (returnType == ReturnType.LogInfoObjects)
+            {
+                return log;
+            }
+
+            var xmlDoc = new XmlDocument { XmlResolver = null };
+            if (log != null)
+            {
+                using var logReader = XmlReader.Create(new StringReader(log.Serialize()), new XmlReaderSettings { XmlResolver = null, });
+                xmlDoc.Load(logReader);
+            }
+
+            return xmlDoc.DocumentElement;
+        }
+
+        /// <inheritdoc />
+        public override ILogInfo GetLog(string logGuid)
+        {
+            IDataReader dr = DataProvider.Instance().GetSingleLog(logGuid);
+            LogInfo log = null;
+            try
+            {
+                if (dr != null)
+                {
+                    dr.Read();
+                    log = FillLogInfo(dr);
+                }
+            }
+            finally
+            {
+                CBO.CloseDataReader(dr, true);
+            }
+
+            return log;
+        }
+
+        /// <inheritdoc />
+        public override bool LoggingIsEnabled(string logType, int portalID)
+        {
+            string configPortalId = portalID.ToString(CultureInfo.InvariantCulture);
+            if (portalID == -1)
+            {
+                configPortalId = "*";
+            }
+
+            LogTypeConfigInfo configInfo = this.GetLogTypeConfigInfoByKey(logType, configPortalId);
+            if (configInfo == null)
+            {
+                return false;
+            }
+
+            return configInfo.LoggingIsActive;
+        }
+
+        /// <inheritdoc />
+        public override void PurgeLogBuffer()
+        {
+            if (!LockQueueLog.TryEnterWriteLock(WriterLockTimeout))
+            {
+                return;
+            }
+
+            try
+            {
+                for (int i = LogQueue.Count - 1; i >= 0; i += -1)
+                {
+                    LogQueueItem logQueueItem = LogQueue[i];
+
+                    // in case the log was removed
+                    // by another thread simultaneously
+                    if (logQueueItem != null)
+                    {
+                        WriteLog(logQueueItem);
+                        LogQueue.Remove(logQueueItem);
+                    }
+                }
+            }
+            finally
+            {
+                LockQueueLog.ExitWriteLock();
+            }
+
+            DataProvider.Instance().PurgeLog();
+        }
+
+        /// <inheritdoc />
+        public override void SendLogNotifications()
+        {
+            var configInfos = CBO.FillCollection<LogTypeConfigInfo>(DataProvider.Instance().GetEventLogPendingNotifConfig());
+            foreach (ILogTypeConfigInfo typeConfigInfo in configInfos)
+            {
+                IDataReader dr = DataProvider.Instance().GetEventLogPendingNotif(Convert.ToInt32(typeConfigInfo.Id, CultureInfo.InvariantCulture));
+                string log = string.Empty;
+                try
+                {
+                    while (dr.Read())
+                    {
+                        LogInfo logInfo = FillLogInfo(dr);
+                        log += logInfo.Serialize() + Environment.NewLine + Environment.NewLine;
+                    }
+                }
+                finally
+                {
+                    CBO.CloseDataReader(dr, true);
+                }
+
+                Mail.Mail.SendEmail(typeConfigInfo.MailFromAddress, typeConfigInfo.MailToAddress, "Event Notification", $"<pre>{HttpUtility.HtmlEncode(log)}</pre>");
+                DataProvider.Instance().UpdateEventLogPendingNotif(Convert.ToInt32(typeConfigInfo.Id, CultureInfo.InvariantCulture));
+            }
+        }
+
+        /// <inheritdoc />
+        public override bool SupportsEmailNotification()
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override bool SupportsInternalViewer()
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        public override bool SupportsSendToCoreTeam()
+        {
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override bool SupportsSendViaEmail()
+        {
+            return true;
+        }
+
+        // ReSharper disable once InconsistentNaming
+
+        /// <inheritdoc />
+        public override void UpdateLogType(string logTypeKey, string logTypeFriendlyName, string logTypeDescription, string logTypeCSSClass, string logTypeOwner)
+        {
+            DataProvider.Instance().UpdateLogType(logTypeKey, logTypeFriendlyName, logTypeDescription, logTypeCSSClass, logTypeOwner);
+            DataCache.RemoveCache(LogTypeCacheKey);
+        }
+
+        /// <inheritdoc />
+        [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", Justification = "Breaking change")]
+        public override void UpdateLogTypeConfigInfo(string id, bool loggingIsActive, string logTypeKey, string logTypePortalID, string keepMostRecent, string logFileName, bool emailNotificationIsActive, string threshold, string thresholdTime, string thresholdTimeType, string mailFromAddress, string mailToAddress)
+        {
+            var intThreshold = -1;
+            var intThresholdTime = -1;
+            var intThresholdTimeType = -1;
+            var intKeepMostRecent = -1;
+            if (Globals.NumberMatchRegex.IsMatch(threshold))
+            {
+                intThreshold = Convert.ToInt32(threshold, CultureInfo.InvariantCulture);
+            }
+
+            if (Globals.NumberMatchRegex.IsMatch(thresholdTime))
+            {
+                intThresholdTime = Convert.ToInt32(thresholdTime, CultureInfo.InvariantCulture);
+            }
+
+            if (Globals.NumberMatchRegex.IsMatch(thresholdTimeType))
+            {
+                intThresholdTimeType = Convert.ToInt32(thresholdTimeType, CultureInfo.InvariantCulture);
+            }
+
+            if (Globals.NumberMatchRegex.IsMatch(keepMostRecent))
+            {
+                intKeepMostRecent = Convert.ToInt32(keepMostRecent, CultureInfo.InvariantCulture);
+            }
+
+            DataProvider.Instance().UpdateLogTypeConfigInfo(
+                id,
+                loggingIsActive,
+                logTypeKey,
+                logTypePortalID,
+                intKeepMostRecent,
+                emailNotificationIsActive,
+                intThreshold,
+                intThresholdTime,
+                intThresholdTimeType,
+                mailFromAddress,
+                mailToAddress);
+            DataCache.RemoveCache(LogTypeInfoCacheKey);
+            DataCache.RemoveCache(LogTypeInfoByKeyCacheKey);
+        }
+
+        private static Hashtable FillLogTypeConfigInfoByKey(ArrayList arr)
+        {
+            var ht = new Hashtable();
+            int i;
+            for (i = 0; i <= arr.Count - 1; i++)
+            {
+                var logTypeConfigInfo = (ILogTypeConfigInfo)arr[i];
+                if (string.IsNullOrEmpty(logTypeConfigInfo.LogTypeKey))
+                {
+                    logTypeConfigInfo.LogTypeKey = "*";
+                }
+
+                if (string.IsNullOrEmpty(logTypeConfigInfo.LogTypePortalId))
+                {
+                    logTypeConfigInfo.LogTypePortalId = "*";
+                }
+
+                ht.Add(logTypeConfigInfo.LogTypeKey + "|" + logTypeConfigInfo.LogTypePortalId, logTypeConfigInfo);
+            }
+
+            DataCache.SetCache(LogTypeInfoByKeyCacheKey, ht);
+            return ht;
+        }
+
+        private static LogInfo FillLogInfo(IDataReader dr)
+        {
+            ILogInfo obj = new LogInfo();
+            try
+            {
+                obj.LogCreateDate = Convert.ToDateTime(dr["LogCreateDate"], CultureInfo.InvariantCulture);
+                obj.LogGuid = Convert.ToString(dr["LogGUID"], CultureInfo.InvariantCulture);
+                obj.LogPortalId = Convert.ToInt32(Null.SetNull(dr["LogPortalID"], obj.LogPortalId), CultureInfo.InvariantCulture);
+                obj.LogPortalName = Convert.ToString(Null.SetNull(dr["LogPortalName"], obj.LogPortalName), CultureInfo.InvariantCulture);
+                obj.LogServerName = Convert.ToString(Null.SetNull(dr["LogServerName"], obj.LogServerName), CultureInfo.InvariantCulture);
+                obj.LogUserId = Convert.ToInt32(Null.SetNull(dr["LogUserID"], obj.LogUserId), CultureInfo.InvariantCulture);
+                obj.LogEventId = Convert.ToInt32(Null.SetNull(dr["LogEventID"], obj.LogEventId), CultureInfo.InvariantCulture);
+                obj.LogTypeKey = Convert.ToString(dr["LogTypeKey"], CultureInfo.InvariantCulture);
+                obj.LogUserName = Convert.ToString(dr["LogUserName"], CultureInfo.InvariantCulture);
+                obj.LogConfigId = Convert.ToString(dr["LogConfigID"], CultureInfo.InvariantCulture);
+                ((LogInfo)obj).LogProperties.Deserialize(Convert.ToString(dr["LogProperties"], CultureInfo.InvariantCulture));
+                obj.Exception.AssemblyVersion = Convert.ToString(Null.SetNull(dr["AssemblyVersion"], obj.Exception.AssemblyVersion), CultureInfo.InvariantCulture);
+                obj.Exception.PortalId = Convert.ToInt32(Null.SetNull(dr["PortalId"], obj.Exception.PortalId), CultureInfo.InvariantCulture);
+                obj.Exception.UserId = Convert.ToInt32(Null.SetNull(dr["UserId"], obj.Exception.UserId), CultureInfo.InvariantCulture);
+                obj.Exception.TabId = Convert.ToInt32(Null.SetNull(dr["TabId"], obj.Exception.TabId), CultureInfo.InvariantCulture);
+                obj.Exception.RawUrl = Convert.ToString(Null.SetNull(dr["RawUrl"], obj.Exception.RawUrl), CultureInfo.InvariantCulture);
+                obj.Exception.Referrer = Convert.ToString(Null.SetNull(dr["Referrer"], obj.Exception.Referrer), CultureInfo.InvariantCulture);
+                obj.Exception.UserAgent = Convert.ToString(Null.SetNull(dr["UserAgent"], obj.Exception.UserAgent), CultureInfo.InvariantCulture);
+                obj.Exception.ExceptionHash = Convert.ToString(Null.SetNull(dr["ExceptionHash"], obj.Exception.ExceptionHash), CultureInfo.InvariantCulture);
+                obj.Exception.Message = Convert.ToString(Null.SetNull(dr["Message"], obj.Exception.Message), CultureInfo.InvariantCulture);
+                obj.Exception.StackTrace = Convert.ToString(Null.SetNull(dr["StackTrace"], obj.Exception.StackTrace), CultureInfo.InvariantCulture);
+                obj.Exception.InnerMessage = Convert.ToString(Null.SetNull(dr["InnerMessage"], obj.Exception.InnerMessage), CultureInfo.InvariantCulture);
+                obj.Exception.InnerStackTrace = Convert.ToString(Null.SetNull(dr["InnerStackTrace"], obj.Exception.InnerStackTrace), CultureInfo.InvariantCulture);
+                obj.Exception.Source = Convert.ToString(Null.SetNull(dr["Source"], obj.Exception.Source), CultureInfo.InvariantCulture);
+                /* DNN-6218 + DNN-6242: DB logging provider throws errors
+                // the view "vw_EventLog" doesn't have these fields or any table in the database
+                obj.Exception.FileName = Convert.ToString(Null.SetNull(dr["FileName"], obj.Exception.FileName));
+                obj.Exception.FileLineNumber = Convert.ToInt32(Null.SetNull(dr["FileLineNumber"], obj.Exception.FileLineNumber));
+                obj.Exception.FileColumnNumber = Convert.ToInt32(Null.SetNull(dr["FileColumnNumber"], obj.Exception.FileColumnNumber));
+                obj.Exception.Method = Convert.ToString(Null.SetNull(dr["Method"], obj.Exception.Method));
+                 */
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+            }
+
+            return (LogInfo)obj;
+        }
+
+        private static void FillLogs(IDataReader dr, IList logs, ref int totalRecords)
+        {
+            try
+            {
+                while (dr.Read())
+                {
+                    LogInfo logInfo = FillLogInfo(dr);
+                    logs.Add(logInfo);
+                }
+
+                dr.NextResult();
+                while (dr.Read())
+                {
+                    totalRecords = Convert.ToInt32(dr["TotalRecords"], CultureInfo.InvariantCulture);
+                }
+            }
+            finally
+            {
+                CBO.CloseDataReader(dr, true);
+            }
+        }
+
+        private static void WriteError(LogTypeConfigInfo logTypeConfigInfo, Exception exc, string header, string message)
+        {
+            if (HttpContext.Current != null)
+            {
+                if (HttpContext.Current.IsCustomErrorEnabled)
+                {
+                    HttpContext.Current.AddError(exc);
+                }
+                else
+                {
+                    HttpResponse response = HttpContext.Current.Response;
+                    response.StatusCode = 500;
+                    HtmlUtils.WriteHeader(response, header);
+
+                    if (logTypeConfigInfo != null)
+                    {
+                        HtmlUtils.WriteError(response, logTypeConfigInfo.LogFileNameWithPath, message);
+                    }
+
+                    HtmlUtils.WriteFooter(response);
+                    response.End();
+                }
+            }
+        }
+
+        private static void WriteLog(LogQueueItem logQueueItem)
+        {
+            LogTypeConfigInfo logTypeConfigInfo = null;
+            try
+            {
+                logTypeConfigInfo = logQueueItem.LogTypeConfigInfo;
+                if (logTypeConfigInfo != null)
+                {
+                    LogInfo objLogInfo = logQueueItem.LogInfo;
+                    string logProperties = objLogInfo.LogProperties.Serialize();
+                    ILogInfo theLogInfo = objLogInfo;
+                    DataProvider.Instance().AddLog(
+                        theLogInfo.LogGuid,
+                        theLogInfo.LogTypeKey,
+                        theLogInfo.LogUserId,
+                        theLogInfo.LogUserName,
+                        theLogInfo.LogPortalId,
+                        theLogInfo.LogPortalName,
+                        theLogInfo.LogCreateDate,
+                        theLogInfo.LogServerName,
+                        logProperties,
+                        Convert.ToInt32(theLogInfo.LogConfigId, CultureInfo.InvariantCulture),
+                        objLogInfo.Exception,
+                        logTypeConfigInfo.EmailNotificationIsActive);
+                    if (logTypeConfigInfo.EmailNotificationIsActive)
+                    {
+                        if (LockNotif.TryEnterWriteLock(ReaderLockTimeout))
+                        {
+                            try
+                            {
+                                if (logTypeConfigInfo.NotificationThreshold == 0)
+                                {
+                                    string str = logQueueItem.LogInfo.Serialize();
+                                    Mail.Mail.SendEmail(logTypeConfigInfo.MailFromAddress, logTypeConfigInfo.MailToAddress, "Event Notification", $"<pre>{HttpUtility.HtmlEncode(str)}</pre>");
+                                }
+                            }
+                            finally
+                            {
+                                LockNotif.ExitWriteLock();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException exc)
+            {
+                Logger.Error(exc);
+                WriteError(logTypeConfigInfo, exc, "SQL Exception", SqlUtils.TranslateSQLException(exc));
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+                WriteError(logTypeConfigInfo, exc, "Unhandled Error", exc.Message);
+            }
+        }
+
+        private LogTypeConfigInfo GetLogTypeConfigInfoByKey(string logTypeKey, string logTypePortalID)
+        {
+            var configInfoByKey = (Hashtable)DataCache.GetCache(LogTypeInfoByKeyCacheKey) ?? FillLogTypeConfigInfoByKey(this.GetLogTypeConfigInfo());
+            var logTypeConfigInfo = (LogTypeConfigInfo)configInfoByKey[logTypeKey + "|" + logTypePortalID];
+            if (logTypeConfigInfo == null)
+            {
+                logTypeConfigInfo = (LogTypeConfigInfo)configInfoByKey["*|" + logTypePortalID];
+                if (logTypeConfigInfo == null)
+                {
+                    logTypeConfigInfo = (LogTypeConfigInfo)configInfoByKey[logTypeKey + "|*"];
+                    if (logTypeConfigInfo == null)
+                    {
+                        logTypeConfigInfo = (LogTypeConfigInfo)configInfoByKey["*|*"];
+                    }
+                    else
+                    {
+                        return logTypeConfigInfo;
+                    }
+                }
+                else
+                {
+                    return logTypeConfigInfo;
+                }
+            }
+            else
+            {
+                return logTypeConfigInfo;
+            }
+
+            return logTypeConfigInfo;
+        }
+    }
+}

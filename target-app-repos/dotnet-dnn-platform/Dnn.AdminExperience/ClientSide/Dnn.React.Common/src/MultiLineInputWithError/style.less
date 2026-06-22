@@ -1,0 +1,88 @@
+@import "../../styles/index";
+.dnn-multi-line-input-with-error {
+    display: inline-block;
+    position: relative;
+    .dnn-label {
+        label {
+            font-weight: 700;
+            cursor: pointer;
+            float: left;
+        }
+    }
+    textarea {
+        color: var(--dnn-color-foreground, @bulgarianRose);
+        border: 1px solid var(--dnn-color-foreground-light, @mountainMist);
+    }
+    &.error {
+        .input-tooltip-container {
+            .dnn-ui-common-multi-line-input {
+                border-bottom: 2px solid var(--dnn-color-danger, @alizarinCrimson);
+            }
+            .dnn-inline-counter {
+                color: var(--dnn-color-danger, @alizarinCrimson);
+                right: 26px;
+            }
+        }
+    }
+    &.warning {
+        .input-tooltip-container {
+            .dnn-ui-common-multi-line-input {
+                border-bottom: 2px solid var(--dnn-color-warning, #EA9C00);
+            }
+            .dnn-inline-counter {
+                color: var(--dnn-color-warning, #EA9C00);
+                right: 26px;
+            }
+        }
+    }
+    &.disabled {
+        .dnn-label {
+            label {
+                color: var(--dnn-color-neutral, @mountainMist);
+                cursor: not-allowed;
+            }
+        }
+        .input-tooltip-container {
+            .dnn-ui-common-multi-line-input {
+                color: var(--dnn-color-neutral, @mountainMist);
+                cursor: not-allowed;
+            }
+        }
+    }
+    .input-tooltip-container {
+        float: left;
+        position: relative;
+        width: 100%;
+        .dnn-ui-common-multi-line-input{
+            width: 100%;
+            border-radius: var(--dnn-controls-radius, 0);
+        }
+        .dnn-inline-counter {
+            position: absolute;
+            color: var(--dnn-color-primary, @curiousBlue);
+            bottom: 13px;
+            right: 7px;
+        }
+        &.inline {
+            width: auto;
+        }
+        .dnn-ui-common-tooltip {
+            position: absolute;
+            bottom: 7px;
+            top: unset;
+            right: 7px;
+            .tooltip-text {
+                max-width: 255px;
+                text-align: center;
+                padding: 7px 15px;
+            }
+            &.outside {
+                right: -25px;
+            }
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+}

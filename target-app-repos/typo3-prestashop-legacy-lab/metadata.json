@@ -1,0 +1,14 @@
+{
+  "app_id": "typo3-prestashop-legacy-lab",
+  "coverage": "Legacy CMS/e-commerce route, admin, module, asset, and install-surface coverage beyond Drupal, Joomla, Magento, and WordPress.",
+  "endpoints": [
+    "/",
+    "/typo3/",
+    "/prestashop/admin-dev/",
+    "/modules/payments/callback",
+    "/install/"
+  ],
+  "name": "TYPO3 PrestaShop Legacy Lab",
+  "recommended_host": "ct-target-legacy-web-zoo",
+  "runtime_url": "http://10.190.190.96:18181/"
+}

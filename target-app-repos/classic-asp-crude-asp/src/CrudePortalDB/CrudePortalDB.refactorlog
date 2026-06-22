@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="093ebd7c-35ce-4f6d-aaf4-e3b80a1c08e1" ChangeDateTime="07/22/2018 08:29:00">
+    <Property Name="ElementName" Value="[portal].[Navigation].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[portal].[Navigation]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NavId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5387bfae-3b0b-4e13-9803-ad1f56a7b4f7" ChangeDateTime="07/28/2018 09:26:37">
+    <Property Name="ElementName" Value="[portal].[DataView].[DataTable]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[portal].[DataView]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DataTableModifierButtonStyle" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="df7688c0-bdf0-467f-9c8d-a8200291f4cb" ChangeDateTime="07/31/2018 13:11:03">
+    <Property Name="ElementName" Value="[portal].[DataView].[DataTablePagingType]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[portal].[DataView]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="DataTablePagingStyle" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1d025c57-314d-4560-a8e0-a3e0d031d0df" ChangeDateTime="08/16/2018 12:12:46">
+    <Property Name="ElementName" Value="[portal].[DataViewAction].[NgClick]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[portal].[DataViewAction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NgClickCode" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="28c4b93d-e3a4-4a9d-a075-1aa8b66638cd" ChangeDateTime="08/16/2018 12:12:53">
+    <Property Name="ElementName" Value="[portal].[DataViewAction].[NgClickCode]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[portal].[DataViewAction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="NgClickJSCode" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="6a01ecfc-09f2-4418-a6a1-34ccb8a29fd6" ChangeDateTime="03/16/2019 15:38:04">
+    <Property Name="ElementName" Value="[portal].[DataViewAction].[NgClickJSCode]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[portal].[DataViewAction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ActionExpression" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="9565b819-a6b0-4366-9b5a-d3521c84eabd" ChangeDateTime="03/16/2019 15:38:30">
+    <Property Name="ElementName" Value="[portal].[DataViewAction].[ButtonStyle]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[portal].[DataViewAction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CSSButton" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d7cc6d57-89c2-4c8c-93c4-e833c2029c2b" ChangeDateTime="03/16/2019 15:43:34">
+    <Property Name="ElementName" Value="[portal].[DataViewAction].[UriTargetWindow]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[portal].[DataViewAction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="OpenInNewWindow" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2070a73b-3b96-4afb-a360-d8053b370cdc" ChangeDateTime="03/16/2019 15:43:59">
+    <Property Name="ElementName" Value="[portal].[DataViewAction].[OpenInNewWindow]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[portal].[DataViewAction]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="OpenURLInNewWindow" />
+  </Operation>
+</Operations>

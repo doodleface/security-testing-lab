@@ -1,0 +1,26 @@
+<Project>
+
+  <PropertyGroup>
+	<Version>4.0.5</Version>
+	<AssemblyVersion>4.0.5</AssemblyVersion>
+	<FileVersion>4.0.5</FileVersion>
+    <Authors>ServiceStack</Authors>
+    <Company>ServiceStack, Inc.</Company>
+    <Copyright>© 2008-2026 ServiceStack, Inc</Copyright>
+    <DebugType>embedded</DebugType>
+    <LangVersion>latest</LangVersion>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' != 'Debug' ">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+	
+	<PropertyGroup Condition=" '$(TargetFramework)' == 'NET10_0_OR_GREATER' ">
+		<DefineConstants>$(DefineConstants);NET10_0_OR_GREATER;NETCORE;NETCORE_SUPPORT</DefineConstants>
+		<SignAssembly>True</SignAssembly>
+		<DelaySign>False</DelaySign>
+		<AssemblyOriginatorKeyFile>../servicestack.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
+</Project>

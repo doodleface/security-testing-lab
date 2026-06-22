@@ -1,0 +1,13 @@
+services:
+  wordpress-lab:
+    image: wordpress:6.7-php8.3-apache
+    ports:
+      - "8089:80"
+  drupal-lab:
+    image: drupal:10-apache
+    ports:
+      - "8092:80"
+  joomla-lab:
+    image: joomla:5-apache
+    ports:
+      - "8093:80"

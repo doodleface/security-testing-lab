@@ -1,0 +1,11 @@
+{
+  "coverage": "Git web UI, webhooks, repo permissions, release artifacts, and issue workflow coverage",
+  "host": "ct-target-holdout",
+  "id": "gitea-devops-lab",
+  "ip": "10.190.190.95",
+  "name": "Gitea DevOps Lab",
+  "platform": "linux",
+  "port": 18208,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/go-gitea/gitea"
+}

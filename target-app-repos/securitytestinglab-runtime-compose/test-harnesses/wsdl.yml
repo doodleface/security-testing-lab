@@ -1,0 +1,9 @@
+services:
+  soap-service:
+    image: nginx:1.27-alpine
+    ports:
+      - "8090:80"
+  wsdl-catalog:
+    image: nginx:1.27-alpine
+    ports:
+      - "8091:80"

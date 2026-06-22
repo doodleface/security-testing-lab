@@ -1,0 +1,16 @@
+services:
+  asp-vbscript-cms:
+    image: securitytestinglab/asp-vbscript-cms:local
+    build:
+      context: ./securitytestinglab-asp-vbscript-cms
+      dockerfile: Dockerfile.windows
+    ports:
+      - "18098:80"
+
+  asp-vbscript-cms-patched:
+    image: securitytestinglab/asp-vbscript-cms-patched:local
+    build:
+      context: ./securitytestinglab-asp-vbscript-cms-patched-exploration
+      dockerfile: Dockerfile.windows
+    ports:
+      - "18100:80"

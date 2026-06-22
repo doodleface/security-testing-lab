@@ -1,0 +1,11 @@
+{
+  "coverage": "Modern .NET CMS workflow and content-management coverage",
+  "host": "windows-iis-target",
+  "id": "umbraco-cms-lab",
+  "ip": "<windows-host>",
+  "name": "Umbraco CMS Lab",
+  "platform": "windows-iis",
+  "port": 18202,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/umbraco/Umbraco-CMS"
+}

@@ -1,0 +1,107 @@
+services:
+  wrongsecrets:
+    image: jeroenwillemsen/wrongsecrets:latest-no-vault
+    container_name: securitytestinglab-wrongsecrets
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18120:8080"
+      - "0.0.0.0:18121:8090"
+
+  security-shepherd-db:
+    build:
+      context: ./security-shepherd/docker/mariadb
+      args:
+        DB_VERSION: ${SECURITY_SHEPHERD_DB_VERSION:-10.6.11}
+        DB_BIND_ADDRESS: "*"
+        CONTAINER_TOMCAT: securitytestinglab-security-shepherd
+        DOCKER_NETWORK_NAME: legacy-web-zoo_default
+    image: securitytestinglab/security-shepherd-mariadb:local
+    container_name: securitytestinglab-security-shepherd-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${SECURITY_SHEPHERD_DB_PASSWORD:?set target-local secret value}
+    expose:
+      - "3306"
+
+  security-shepherd-mongo:
+    build:
+      context: ./security-shepherd/docker/mongo
+      args:
+        MONGODB_VERSION: ${SECURITY_SHEPHERD_MONGODB_VERSION:-4.1.13}
+        MONGO_BIND_ADDRESS: 127.0.0.1
+    image: securitytestinglab/security-shepherd-mongo:local
+    container_name: securitytestinglab-security-shepherd-mongo
+    restart: unless-stopped
+    expose:
+      - "27017"
+
+  security-shepherd:
+    build:
+      context: ./security-shepherd
+      args:
+        TOMCAT_DOCKER_VERSION: ${SECURITY_SHEPHERD_TOMCAT_VERSION:-9.0-jre17-temurin}
+        DB_USER: root
+        DB_PASS: ${SECURITY_SHEPHERD_DB_PASSWORD:?set target-local secret value}
+        MARIADB_URI: jdbc:mariadb://securitytestinglab-security-shepherd-db:3306
+        MONGO_HOST: securitytestinglab-security-shepherd-mongo
+        MONGO_PORT: 27017
+        MONGO_CONN_TIMEOUT: 1000
+        MONGO_SOCK_TIMEOUT: 0
+        MONGO_SVR_TIMEOUT: 30000
+        TLS_KEYSTORE_FILE: shepherdKeystore.p12
+        TLS_KEYSTORE_PASS: ${SECURITY_SHEPHERD_TLS_KEYSTORE_PASSWORD:?set target-local secret value}
+        ALIAS: tomcat
+        HTTPS_PORT: 8443
+    image: securitytestinglab/security-shepherd:local
+    container_name: securitytestinglab-security-shepherd
+    restart: unless-stopped
+    depends_on:
+      - security-shepherd-db
+      - security-shepherd-mongo
+    environment:
+      TZ: UTC
+    ports:
+      - "0.0.0.0:18130:8080"
+      - "0.0.0.0:18131:8443"
+
+  dvwp-wordpress:
+    build:
+      context: ./dvwp
+    image: securitytestinglab/dvwp-wordpress:local
+    container_name: securitytestinglab-dvwp-wordpress
+    restart: unless-stopped
+    depends_on:
+      - dvwp-mysql
+    environment:
+      WORDPRESS_DB_HOST: dvwp-mysql:3306
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: ${DVWP_DB_PASSWORD:?set target-local secret value}
+    ports:
+      - "0.0.0.0:18140:80"
+    volumes:
+      - dvwp_wp:/var/www/html:rw
+
+  dvwp-mysql:
+    image: mysql:5.7
+    container_name: securitytestinglab-dvwp-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DVWP_DB_PASSWORD:?set target-local secret value}
+    volumes:
+      - dvwp_db:/var/lib/mysql
+
+  dvwp-phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: securitytestinglab-dvwp-phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      - dvwp-mysql
+    environment:
+      PMA_ARBITRARY: "1"
+      PMA_HOST: dvwp-mysql
+    ports:
+      - "0.0.0.0:18141:80"
+
+volumes:
+  dvwp_wp: {}
+  dvwp_db: {}

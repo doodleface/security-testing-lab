@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  margin-left: 1em;
+  position: relative;
+}
+
+button{
+  display: flex;
+  align-items: center;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+  gap: 0.5em;
+  cursor: pointer;
+}
+
+dnn-collapsible{
+  position: absolute;
+  display: none;
+  border: 1px solid lightgray;
+  box-shadow: 2px 2px 4px -2px;
+  background-color: white;
+  z-index: 1;
+}

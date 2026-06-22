@@ -1,0 +1,11 @@
+{
+  "coverage": "Modern browser authentication ceremony, attestation, assertion, and downgrade/misconfiguration coverage",
+  "host": "ct-target-holdout",
+  "id": "webauthn-passkey-lab",
+  "ip": "10.190.190.95",
+  "name": "WebAuthn Passkey Lab",
+  "platform": "linux",
+  "port": 18213,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/duo-labs/py_webauthn"
+}

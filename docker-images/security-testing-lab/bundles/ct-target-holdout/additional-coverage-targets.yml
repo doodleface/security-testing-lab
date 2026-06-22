@@ -1,0 +1,70 @@
+services:
+  graphql-voyager-demo:
+    build:
+      context: ./graphql-voyager-demo
+      dockerfile: Dockerfile
+    image: securitytestinglab/graphql-voyager-demo:local
+    container_name: securitytestinglab-graphql-voyager-demo
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18172:8080"
+
+  tiredful-api-lab:
+    build:
+      context: ./tiredful-api-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/tiredful-api-lab:local
+    container_name: securitytestinglab-tiredful-api-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18173:8080"
+
+  keycloak-oidc-weak-client:
+    build:
+      context: ./keycloak-oidc-weak-client
+      dockerfile: Dockerfile
+    image: securitytestinglab/keycloak-oidc-weak-client:local
+    container_name: securitytestinglab-keycloak-oidc-weak-client
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18174:8080"
+
+  saml-sp-idp-lab:
+    build:
+      context: ./saml-sp-idp-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/saml-sp-idp-lab:local
+    container_name: securitytestinglab-saml-sp-idp-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18175:8080"
+
+  cache-deception-variants-lab:
+    build:
+      context: ./cache-deception-variants-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/cache-deception-variants-lab:local
+    container_name: securitytestinglab-cache-deception-variants-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18182:8080"
+
+  ssrf-metadata-sim-lab:
+    build:
+      context: ./ssrf-metadata-sim-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/ssrf-metadata-sim-lab:local
+    container_name: securitytestinglab-ssrf-metadata-sim-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18183:8080"
+
+  cors-jwt-header-misconfig-lab:
+    build:
+      context: ./cors-jwt-header-misconfig-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/cors-jwt-header-misconfig-lab:local
+    container_name: securitytestinglab-cors-jwt-header-misconfig-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18184:8080"

@@ -1,0 +1,11 @@
+{
+  "coverage": "Webmail, MIME preview, address-book, attachment, and mail-auth flow coverage",
+  "host": "ct-target-holdout",
+  "id": "roundcube-webmail-lab",
+  "ip": "10.190.190.95",
+  "name": "Roundcube Webmail Lab",
+  "platform": "linux",
+  "port": 18206,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/roundcube/roundcubemail"
+}

@@ -1,0 +1,82 @@
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Collapsible, SvgIcons } from "@dnnsoftware/dnn-react-common";
+import "./style.less";
+
+class ListEntryRow extends Component {
+    componentDidMount() {
+        let opened = (this.props.openId !== "" && this.props.id === this.props.openId);
+        this.setState({
+            opened
+        });
+    }
+
+    toggle() {
+        if ((this.props.openId !== "" && this.props.id === this.props.openId)) {
+            //this.props.Collapsible();
+        }
+        else {
+            this.props.OpenCollapse(this.props.id);
+        }
+    }
+
+     
+    render() {
+        const { props } = this;
+        let opened = (this.props.openId !== "" && this.props.id === this.props.openId);
+        return (
+            <div className={"collapsible-component-entry" + (opened ? " row-opened" : "")}>
+                <div className={"collapsible-entry " + !opened} >
+                    <div className={"row"}>
+                        <div title={props.name} className="list-item item-row-text">
+                            {props.text}
+                        </div>
+                        <div className="list-item item-row-value">
+                            {props.value}
+                        </div>
+                        <div className="list-item item-row-actionButtons">
+                            {props.enableSortOrder &&
+                                <div className={opened ? "order-icon-hidden" : "order-icon"}>
+                                    <SvgIcons.DragRowIcon />
+                                </div>
+                            }
+                            <div className={opened ? "delete-icon-hidden" : "delete-icon"}
+                                onClick={props.onDelete.bind(this, props.entryId)}>
+                                <SvgIcons.TrashIcon />
+                            </div>
+                            <div className={opened ? "edit-icon-active" : "edit-icon"}
+                                onClick={this.toggle.bind(this)}>
+                                <SvgIcons.EditIcon />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <Collapsible 
+                    isOpened={opened}
+                    className={"collapsible-entry-body " + (props.enableSortOrder ? "with-sort-order" : "")}>
+                    {opened && props.children}
+                </Collapsible>
+            </div>
+        );
+    }
+}
+
+ListEntryRow.propTypes = {
+    entryId: PropTypes.number,
+    value: PropTypes.string,
+    text: PropTypes.string,
+    OpenCollapse: PropTypes.func,
+    Collapse: PropTypes.func,
+    onDelete: PropTypes.func,
+    id: PropTypes.string,
+    openId: PropTypes.string,
+    enableSortOrder: PropTypes.bool,
+    children: PropTypes.node,
+    name: PropTypes.string
+};
+
+ListEntryRow.defaultProps = {
+    collapsed: true
+};
+
+export default (ListEntryRow);

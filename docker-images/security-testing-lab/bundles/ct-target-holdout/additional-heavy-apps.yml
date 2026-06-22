@@ -1,0 +1,55 @@
+services:
+  openemr-vuln:
+    image: openemr/openemr:5.0.2
+    container_name: securitytestinglab-openemr-vuln
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18160:80"
+    volumes:
+      - openemr_sites:/var/www/localhost/htdocs/openemr/sites
+      - openemr_logs:/var/log
+
+  magento-old:
+    image: alexcheng/magento2:2.2.3
+    container_name: securitytestinglab-magento-old
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18161:80"
+    volumes:
+      - magento_app:/var/www/html
+
+  drupal-vuln-db:
+    image: mysql:5.7
+    container_name: securitytestinglab-drupal-vuln-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: ${DRUPAL_DB_PASSWORD:?set target-local secret value}
+      MYSQL_ROOT_PASSWORD: ${DRUPAL_DB_ROOT_PASSWORD:?set target-local secret value}
+    volumes:
+      - drupal_db:/var/lib/mysql
+
+  drupal-vuln:
+    image: drupal:8.9.20-php7.4-apache
+    container_name: securitytestinglab-drupal-vuln
+    restart: unless-stopped
+    depends_on:
+      - drupal-vuln-db
+    ports:
+      - "0.0.0.0:18164:80"
+    volumes:
+      - drupal_sites:/var/www/html/sites
+      - drupal_modules:/var/www/html/modules
+      - drupal_profiles:/var/www/html/profiles
+      - drupal_themes:/var/www/html/themes
+
+volumes:
+  openemr_sites: {}
+  openemr_logs: {}
+  magento_app: {}
+  drupal_db: {}
+  drupal_sites: {}
+  drupal_modules: {}
+  drupal_profiles: {}
+  drupal_themes: {}

@@ -1,0 +1,80 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information
+namespace DotNetNuke.Web.UI.WebControls
+{
+    using System;
+    using System.Web.UI;
+    using System.Web.UI.WebControls;
+
+    using DotNetNuke.Abstractions.Application;
+    using DotNetNuke.Abstractions.Logging;
+    using DotNetNuke.Common;
+    using DotNetNuke.Framework;
+    using DotNetNuke.UI.WebControls;
+
+    using Microsoft.Extensions.DependencyInjection;
+
+    /// <summary>A property edit item control.</summary>
+    public class DnnFormEditControlItem : DnnFormItemBase
+    {
+        private readonly IServiceProvider serviceProvider;
+        private EditControl control;
+
+        /// <summary>Initializes a new instance of the <see cref="DnnFormEditControlItem"/> class.</summary>
+        [Obsolete("Deprecated in DotNetNuke 10.0.0. Please use overload with IServiceProvider. Scheduled removal in v12.0.0.")]
+        public DnnFormEditControlItem()
+            : this(null, null, null)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="DnnFormEditControlItem"/> class.</summary>
+        /// <param name="serviceProvider">The DI container scope.</param>
+        [Obsolete("Deprecated in DotNetNuke 10.2.2. Please use overload with IApplicationStatusInfo. Scheduled removal in v12.0.0.")]
+        public DnnFormEditControlItem(IServiceProvider serviceProvider)
+            : this(null, null, serviceProvider)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="DnnFormEditControlItem"/> class.</summary>
+        /// <param name="appStatus">The application status.</param>
+        /// <param name="eventLogger">The event logger.</param>
+        /// <param name="serviceProvider">The DI container scope.</param>
+        public DnnFormEditControlItem(IApplicationStatusInfo appStatus, IEventLogger eventLogger, IServiceProvider serviceProvider)
+            : base(appStatus ?? Globals.GetCurrentServiceProvider().GetRequiredService<IApplicationStatusInfo>(), eventLogger ?? Globals.GetCurrentServiceProvider().GetRequiredService<IEventLogger>())
+        {
+            this.serviceProvider = serviceProvider ?? Globals.GetCurrentServiceProvider();
+        }
+
+        /// <summary>Gets or sets the control type.</summary>
+        public string ControlType { get; set; }
+
+        /// <inheritdoc />
+        protected override WebControl CreateControlInternal(Control container)
+        {
+            this.control = ActivatorUtilities.CreateInstance(this.serviceProvider, Reflection.CreateType(this.ControlType)) as EditControl;
+            if (this.control != null)
+            {
+                this.control.ID = this.ID + "_Control";
+                this.control.Name = this.ID;
+                this.control.EditMode = PropertyEditorMode.Edit;
+                this.control.Required = false;
+                this.control.Value = this.Value;
+                this.control.OldValue = this.Value;
+                this.control.ValueChanged += this.ValueChanged;
+                this.control.DataField = this.DataField;
+
+                this.control.CssClass = "dnnFormInput";
+
+                container.Controls.Add(this.control);
+            }
+
+            return this.control;
+        }
+
+        private void ValueChanged(object sender, PropertyEditorEventArgs e)
+        {
+            this.UpdateDataSource(this.Value, e.Value, this.DataField);
+        }
+    }
+}

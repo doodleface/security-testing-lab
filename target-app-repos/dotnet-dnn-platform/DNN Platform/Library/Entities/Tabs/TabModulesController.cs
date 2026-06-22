@@ -1,0 +1,170 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information
+namespace DotNetNuke.Entities.Tabs
+{
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+
+    using DotNetNuke.Abstractions.Application;
+    using DotNetNuke.Common;
+    using DotNetNuke.Common.Utilities;
+    using DotNetNuke.Data;
+    using DotNetNuke.Entities.Modules;
+    using DotNetNuke.Entities.Portals;
+    using DotNetNuke.Entities.Tabs.TabVersions;
+    using DotNetNuke.Framework;
+    using DotNetNuke.UI.Skins;
+
+    using Microsoft.Extensions.DependencyInjection;
+
+    /// <summary>An <see cref="ITabModulesController"/> implementation.</summary>
+    /// <param name="hostSettings">The host settings.</param>
+    public class TabModulesController(IHostSettings hostSettings)
+        : ServiceLocator<ITabModulesController, TabModulesController>, ITabModulesController
+    {
+        private readonly IHostSettings hostSettings = hostSettings ?? Globals.GetCurrentServiceProvider().GetRequiredService<IHostSettings>();
+
+        /// <summary>Initializes a new instance of the <see cref="TabModulesController"/> class.</summary>
+        [Obsolete("Deprecated in DotNetNuke 10.2.4. Please use overload with IHostSettings. Scheduled removal in v12.0.0.")]
+        public TabModulesController()
+            : this(null)
+        {
+        }
+
+        /// <inheritdoc />
+        public ArrayList GetTabModules(TabInfo tab)
+        {
+            var objPaneModules = new Dictionary<string, int>();
+
+            var modules = GetModules(tab);
+            var configuredModules = new ArrayList();
+            foreach (var configuringModule in modules)
+            {
+                ConfigureModule(configuringModule, tab);
+
+                if (objPaneModules.ContainsKey(configuringModule.PaneName) == false)
+                {
+                    objPaneModules.Add(configuringModule.PaneName, 0);
+                }
+
+                configuringModule.PaneModuleCount = 0;
+                if (!configuringModule.IsDeleted)
+                {
+                    objPaneModules[configuringModule.PaneName] = objPaneModules[configuringModule.PaneName] + 1;
+                    configuringModule.PaneModuleIndex = objPaneModules[configuringModule.PaneName] - 1;
+                }
+
+                configuredModules.Add(configuringModule);
+            }
+
+            foreach (ModuleInfo module in configuredModules)
+            {
+                if (PortalSettings.Current != null)
+                {
+                    module.Header = HtmlUtils.SanitizeHtmlIfNeeded(module.Header, PortalSettings.Current.AllowJsInModuleHeaders);
+                    module.Footer = HtmlUtils.SanitizeHtmlIfNeeded(module.Footer, PortalSettings.Current.AllowJsInModuleFooters);
+                }
+
+                module.PaneModuleCount = objPaneModules[module.PaneName];
+            }
+
+            return configuredModules;
+        }
+
+        /// <inheritdoc />
+        public Dictionary<int, string> GetTabModuleSettingsByName(string settingName)
+        {
+            var portalId = PortalSettings.Current.PortalId;
+            var dataProvider = DataProvider.Instance();
+            var cacheKey = string.Format(CultureInfo.InvariantCulture, DataCache.TabModuleSettingsNameCacheKey, portalId, settingName);
+            var cachedItems = CBO.GetCachedObject<Dictionary<int, string>>(
+                this.hostSettings,
+                new CacheItemArgs(cacheKey, DataCache.TabModuleCacheTimeOut, DataCache.TabModuleCachePriority),
+                _ =>
+                {
+                    using var dr = dataProvider.GetTabModuleSettingsByName(portalId, settingName);
+                    var result = new Dictionary<int, string>();
+                    while (dr.Read())
+                    {
+                        result[dr.GetInt32(0)] = dr.GetString(1);
+                    }
+
+                    return result;
+                });
+
+            return cachedItems;
+        }
+
+        /// <inheritdoc />
+        public IList<int> GetTabModuleIdsBySetting(string settingName, string expectedValue)
+        {
+            var items = this.GetTabModuleSettingsByName(settingName);
+            var matches = items.Where(e => e.Value.Equals(expectedValue, StringComparison.OrdinalIgnoreCase));
+            var keyValuePairs = matches as KeyValuePair<int, string>[] ?? matches.ToArray();
+            if (keyValuePairs.Length != 0)
+            {
+                return keyValuePairs.Select(kpv => kpv.Key).ToList();
+            }
+
+            // this is fallback in case a new value was added but not in the cache yet
+            var dataProvider = DataProvider.Instance();
+            using (var dr = dataProvider.GetTabModuleIdsBySettingNameAndValue(PortalSettings.Current.PortalId, settingName, expectedValue))
+            {
+                var result = new List<int>();
+                while (dr.Read())
+                {
+                    result.Add(dr.GetInt32(0));
+                }
+
+                return result;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override Func<ITabModulesController> GetFactory()
+        {
+            return () => Globals.DependencyProvider.GetRequiredService<ITabModulesController>();
+        }
+
+        private static void ConfigureModule(ModuleInfo cloneModule, TabInfo tab)
+        {
+            if (Null.IsNull(cloneModule.StartDate))
+            {
+                cloneModule.StartDate = DateTime.MinValue;
+            }
+
+            if (Null.IsNull(cloneModule.EndDate))
+            {
+                cloneModule.EndDate = DateTime.MaxValue;
+            }
+
+            if (string.IsNullOrEmpty(cloneModule.ContainerSrc))
+            {
+                cloneModule.ContainerSrc = tab.ContainerSrc;
+            }
+
+            cloneModule.ContainerSrc = SkinController.FormatSkinSrc(cloneModule.ContainerSrc, PortalSettings.Current);
+            cloneModule.ContainerPath = SkinController.FormatSkinPath(cloneModule.ContainerSrc);
+        }
+
+        private static IEnumerable<ModuleInfo> GetModules(TabInfo tab)
+        {
+            int urlVersion;
+            if (TabVersionUtils.TryGetUrlVersion(out urlVersion))
+            {
+                return TabVersionBuilder.Instance.GetVersionModules(tab.TabID, urlVersion);
+            }
+
+            if (Globals.IsEditMode())
+            {
+                return TabVersionBuilder.Instance.GetUnPublishedVersionModules(tab.TabID);
+            }
+
+            return TabVersionBuilder.Instance.GetCurrentModules(tab.TabID);
+        }
+    }
+}

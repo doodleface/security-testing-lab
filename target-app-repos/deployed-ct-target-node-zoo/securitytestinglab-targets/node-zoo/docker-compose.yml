@@ -1,0 +1,30 @@
+services:
+  nodegoat:
+    build:
+      context: ./nodegoat
+    image: securitytestinglab/nodegoat-target:local
+    container_name: securitytestinglab-nodegoat
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://nodegoat-mongo:27017/nodegoat
+    command: sh -c "until nc -z -w 2 nodegoat-mongo 27017 && echo mongo is ready for connections && node artifacts/db-reset.js && npm start; do sleep 2; done"
+    ports:
+      - "0.0.0.0:4000:4000"
+    depends_on:
+      - nodegoat-mongo
+
+  nodegoat-mongo:
+    image: mongo:4.4
+    container_name: securitytestinglab-nodegoat-mongo
+    restart: unless-stopped
+    user: mongodb
+    expose:
+      - "27017"
+
+  dvna:
+    image: appsecco/dvna:sqlite
+    container_name: securitytestinglab-dvna
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:9090:9090"

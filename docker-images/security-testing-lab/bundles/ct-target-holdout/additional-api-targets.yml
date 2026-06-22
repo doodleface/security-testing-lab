@@ -1,0 +1,49 @@
+services:
+  vapi:
+    build:
+      context: ./vapi
+    image: securitytestinglab/vapi-target:local
+    container_name: securitytestinglab-vapi
+    restart: unless-stopped
+    depends_on:
+      - vapi-db
+    environment:
+      APP_NAME: Laravel
+      APP_ENV: local
+      APP_KEY: ${VAPI_APP_KEY:?set target-local generated Laravel app key}
+      APP_DEBUG: "true"
+      APP_URL: http://10.190.190.95:18122
+      SERVER_PORT: 80
+      LOG_CHANNEL: errorlog
+      LOG_LEVEL: debug
+      DB_CONNECTION: mysql
+      DB_HOST: vapi-db
+      DB_PORT: 3306
+      DB_DATABASE: vapi
+      DB_USERNAME: root
+      DB_PASSWORD: ${VAPI_DB_PASSWORD:?set target-local secret value}
+      CACHE_DRIVER: file
+      QUEUE_CONNECTION: sync
+      SESSION_DRIVER: file
+    ports:
+      - "0.0.0.0:18122:80"
+    volumes:
+      - ./vapi/vapi:/var/www/html/vapi
+
+  vapi-db:
+    image: mysql:8.0
+    container_name: securitytestinglab-vapi-db
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: vapi
+      MYSQL_USER: vapi
+      MYSQL_PASSWORD: ${VAPI_DB_PASSWORD:?set target-local secret value}
+      MYSQL_ROOT_PASSWORD: ${VAPI_DB_PASSWORD:?set target-local secret value}
+    volumes:
+      - ./vapi/database:/docker-entrypoint-initdb.d:ro
+      - ./vapi/conf:/etc/mysql/conf.d:ro
+      - vapi_db:/var/lib/mysql
+
+volumes:
+  vapi_db: {}

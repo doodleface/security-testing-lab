@@ -1,0 +1,8 @@
+services:
+  auth-boundary-lab:
+    build:
+      context: .
+    image: securitytestinglab/auth-boundary-lab:local
+    restart: unless-stopped
+    ports:
+      - "${AUTH_BOUNDARY_LAB_PORT:-18080}:8080"

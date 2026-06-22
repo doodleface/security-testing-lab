@@ -1,0 +1,14 @@
+{
+  "app_id": "tiredful-api-lab",
+  "coverage": "REST/OpenAPI style API collection for Schemathesis, RESTler, OpenAPI parsing, auth-boundary, and error handling checks.",
+  "endpoints": [
+    "/",
+    "/openapi.json",
+    "/api/v1/items",
+    "/api/v1/orders/1001",
+    "/api/v1/profile"
+  ],
+  "name": "Tiredful REST API Lab",
+  "recommended_host": "ct-target-holdout",
+  "runtime_url": "http://10.190.190.95:18173/"
+}

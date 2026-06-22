@@ -1,0 +1,11 @@
+{
+  "coverage": ".NET/Kestrel/Razor/MVC route and model-binding coverage",
+  "host": "windows-iis-target",
+  "id": "aspnet-core-vulnerable-lab",
+  "ip": "<windows-host>",
+  "name": "ASP.NET Core Vulnerable Lab",
+  "platform": "windows-iis",
+  "port": 18200,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/dotnet/AspNetCore.Docs"
+}

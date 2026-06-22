@@ -1,0 +1,39 @@
+﻿<dotnetnuke type="Package" version="5.0">
+    <packages>
+        <package name="Dnn.AzureConnector" type="Connector" isSystem="false" version="10.03.03">
+            <friendlyName>Dnn Azure Connector</friendlyName>
+            <description>The Azure Connector allows you to create folders mapped to Azure Storage accounts.</description>
+            <iconFile>~/DesktopModules/Connectors/Azure/Images/icon-azure-32px.png</iconFile>
+          <dependencies>
+            <dependency type="CoreVersion">09.02.00</dependency>
+          </dependencies>
+            <owner>
+                <name>.NET Foundation and Contributors</name>
+                <organization>DNN Community</organization>
+                <url>https://dnncommunity.org</url>
+                <email>info@dnncommunity.org</email>
+            </owner>
+            <license src="license.txt" />
+            <releaseNotes src="releaseNotes.txt" />
+            <azureCompatible>true</azureCompatible>
+            <components>
+                <component type="Assembly">
+                    <assemblies>
+                        <assembly>
+                            <path>bin</path>
+                            <name>Dnn.AzureConnector.dll</name>
+                        </assembly>
+                    </assemblies>
+                </component>
+                <component type="ResourceFile">
+                    <resourceFiles>
+                        <basePath>DesktopModules\Connectors\Azure</basePath>
+                        <resourceFile>
+                            <name>Resources.zip</name>
+                        </resourceFile>
+                    </resourceFiles>
+                </component>
+            </components>
+        </package>
+    </packages>
+</dotnetnuke>

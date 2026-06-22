@@ -1,0 +1,6 @@
+services:
+  bugzilla5.web:
+    ports:
+      - "18095:80"
+    environment:
+      - BZ_URLBASE=http://10.190.190.96:18095/

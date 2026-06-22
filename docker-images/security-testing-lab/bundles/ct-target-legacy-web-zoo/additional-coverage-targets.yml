@@ -1,0 +1,40 @@
+services:
+  laravel-larabug-lab:
+    build:
+      context: ./laravel-larabug-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/laravel-larabug-lab:local
+    container_name: securitytestinglab-laravel-larabug-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18178:8080"
+
+  spring-boot-vuln-lab:
+    build:
+      context: ./spring-boot-vuln-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/spring-boot-vuln-lab:local
+    container_name: securitytestinglab-spring-boot-vuln-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18179:8080"
+
+  struts-showcase-lab:
+    build:
+      context: ./struts-showcase-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/struts-showcase-lab:local
+    container_name: securitytestinglab-struts-showcase-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18180:8080"
+
+  typo3-prestashop-legacy-lab:
+    build:
+      context: ./typo3-prestashop-legacy-lab
+      dockerfile: Dockerfile
+    image: securitytestinglab/typo3-prestashop-legacy-lab:local
+    container_name: securitytestinglab-typo3-prestashop-legacy-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18181:8080"

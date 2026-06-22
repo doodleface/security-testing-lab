@@ -1,0 +1,11 @@
+{
+  "coverage": "Non-REST API protocol, grpc-web content types, reflection-like metadata, and unary route coverage",
+  "host": "ct-target-holdout",
+  "id": "grpc-web-demo-lab",
+  "ip": "10.190.190.95",
+  "name": "gRPC-Web Demo Lab",
+  "platform": "linux",
+  "port": 18212,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/grpc/grpc-web"
+}

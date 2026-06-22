@@ -1,0 +1,14 @@
+{
+  "app_id": "spring-boot-vuln-lab",
+  "coverage": "Spring Boot actuator, MVC, JSON error, and Java route coverage beyond WebGoat, Petclinic, and BenchmarkJava.",
+  "endpoints": [
+    "/",
+    "/actuator",
+    "/actuator/env",
+    "/api/users/1",
+    "/error"
+  ],
+  "name": "Spring Boot Vulnerable Lab",
+  "recommended_host": "ct-target-legacy-web-zoo",
+  "runtime_url": "http://10.190.190.96:18179/"
+}

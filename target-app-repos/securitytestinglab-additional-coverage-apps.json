@@ -1,0 +1,482 @@
+[
+  {
+    "coverage": "SKF-style focused labs for SSRF, IDOR, XXE, JWT, path traversal, and deserialization route shapes.",
+    "endpoints": [
+      [
+        "/",
+        "SKF mini index"
+      ],
+      [
+        "/labs/ssrf",
+        "SSRF shape"
+      ],
+      [
+        "/labs/idor/1001",
+        "IDOR shape"
+      ],
+      [
+        "/labs/xxe",
+        "XXE shape"
+      ],
+      [
+        "/labs/path-traversal",
+        "Path traversal shape"
+      ],
+      [
+        "/labs/deserialization",
+        "Deserialization shape"
+      ]
+    ],
+    "host": "ct-target-dvwa",
+    "host_bundle": "ct-target-dvwa",
+    "id": "skf-labs-mini",
+    "ip": "10.190.190.91",
+    "name": "OWASP SKF Labs Mini",
+    "port": 18170,
+    "revision": "9b45f081c8080d1454a345785b9f3ddaf591be85"
+  },
+  {
+    "coverage": "Self-hosted WebGoat-like subset for request smuggling indicators, access control, cache poisoning, and parameter pollution surfaces.",
+    "endpoints": [
+      [
+        "/",
+        "academy subset index"
+      ],
+      [
+        "/lab/access-control",
+        "Access control"
+      ],
+      [
+        "/lab/parameter-pollution",
+        "Parameter pollution"
+      ],
+      [
+        "/lab/cache-poisoning",
+        "Cache poisoning"
+      ],
+      [
+        "/lab/request-routing",
+        "Request routing"
+      ]
+    ],
+    "host": "ct-target-dvwa",
+    "host_bundle": "ct-target-dvwa",
+    "id": "portswigger-websec-subset",
+    "ip": "10.190.190.91",
+    "name": "PortSwigger-style Web Security Academy Subset",
+    "port": 18171,
+    "revision": "8cbf1606cb09268f974f3dd83b82e123ff3a8ffe"
+  },
+  {
+    "coverage": "Additional GraphQL schema and voyager-style introspection endpoint for GraphQL adapter diversity beyond DVGA.",
+    "endpoints": [
+      [
+        "/",
+        "GraphQL voyager demo"
+      ],
+      [
+        "/graphql",
+        "GraphQL endpoint"
+      ],
+      [
+        "/voyager",
+        "Voyager UI placeholder"
+      ],
+      [
+        "/schema",
+        "Schema metadata"
+      ]
+    ],
+    "host": "ct-target-holdout",
+    "host_bundle": "ct-target-holdout",
+    "id": "graphql-voyager-demo",
+    "ip": "10.190.190.95",
+    "name": "GraphQL Voyager Demo API",
+    "port": 18172,
+    "revision": "c4b39c19bee60a39289473429341c0abc5caf05d"
+  },
+  {
+    "coverage": "REST/OpenAPI style API collection for Schemathesis, RESTler, OpenAPI parsing, auth-boundary, and error handling checks.",
+    "endpoints": [
+      [
+        "/",
+        "REST API index"
+      ],
+      [
+        "/openapi.json",
+        "OpenAPI metadata"
+      ],
+      [
+        "/api/v1/items",
+        "Items API"
+      ],
+      [
+        "/api/v1/orders/1001",
+        "Order API"
+      ],
+      [
+        "/api/v1/profile",
+        "Profile API"
+      ]
+    ],
+    "host": "ct-target-holdout",
+    "host_bundle": "ct-target-holdout",
+    "id": "tiredful-api-lab",
+    "ip": "10.190.190.95",
+    "name": "Tiredful REST API Lab",
+    "port": 18173,
+    "revision": "05a8eed0470dceba9b0231a1b38a86bc14bd1b88"
+  },
+  {
+    "coverage": "OIDC/Keycloak-like weak client and discovery metadata for OAuth, OIDC, JWT, redirect, and session adapter exercise.",
+    "endpoints": [
+      [
+        "/",
+        "OIDC lab index"
+      ],
+      [
+        "/.well-known/openid-configuration",
+        "OIDC discovery"
+      ],
+      [
+        "/realms/securitytestinglab/protocol/openid-connect/auth",
+        "Auth endpoint"
+      ],
+      [
+        "/weak-client/callback",
+        "Weak client callback"
+      ],
+      [
+        "/jwks",
+        "JWKS metadata"
+      ]
+    ],
+    "host": "ct-target-holdout",
+    "host_bundle": "ct-target-holdout",
+    "id": "keycloak-oidc-weak-client",
+    "ip": "10.190.190.95",
+    "name": "Keycloak Weak OIDC Client Lab",
+    "port": 18174,
+    "revision": "02549938cf4f1a92540b2fbc4cfd8fa85a7893db"
+  },
+  {
+    "coverage": "SAML SP/IdP metadata and ACS/SLO shapes for saml_raider and XML security adapter exercise without retaining assertions.",
+    "endpoints": [
+      [
+        "/",
+        "SAML lab index"
+      ],
+      [
+        "/sp/metadata",
+        "SP metadata"
+      ],
+      [
+        "/idp/metadata",
+        "IdP metadata"
+      ],
+      [
+        "/saml/acs",
+        "ACS endpoint"
+      ],
+      [
+        "/saml/slo",
+        "SLO endpoint"
+      ]
+    ],
+    "host": "ct-target-holdout",
+    "host_bundle": "ct-target-holdout",
+    "id": "saml-sp-idp-lab",
+    "ip": "10.190.190.95",
+    "name": "SAML SP IdP Lab",
+    "port": 18175,
+    "revision": "7f6a35b62625bf55cde9f91535421b4820e44bb2"
+  },
+  {
+    "coverage": "Flask/Django-style route, template, upload, debug-header, and auth/session misconfiguration surfaces beyond Django.nV and Vulpy.",
+    "endpoints": [
+      [
+        "/",
+        "Python framework lab"
+      ],
+      [
+        "/flask/debug",
+        "Debug route"
+      ],
+      [
+        "/django/template",
+        "Template route"
+      ],
+      [
+        "/upload",
+        "Upload shape"
+      ],
+      [
+        "/session/profile",
+        "Session profile"
+      ]
+    ],
+    "host": "ct-target-node-zoo",
+    "host_bundle": "ct-target-node-zoo",
+    "id": "python-framework-misconfig-lab",
+    "ip": "10.190.190.97",
+    "name": "Python Framework Misconfiguration Lab",
+    "port": 18176,
+    "revision": "af86f0770750d200db82f418f83426f05089eabe"
+  },
+  {
+    "coverage": "Node/Express CMS-style content, admin, asset, redirect, and API route coverage distinct from NodeGoat and DVNA.",
+    "endpoints": [
+      [
+        "/",
+        "Express CMS index"
+      ],
+      [
+        "/ghost/api/content/posts",
+        "Content API"
+      ],
+      [
+        "/ghost/admin/",
+        "Admin route"
+      ],
+      [
+        "/assets/theme.js",
+        "Theme asset"
+      ],
+      [
+        "/redirect",
+        "Redirect shape"
+      ]
+    ],
+    "host": "ct-target-node-zoo",
+    "host_bundle": "ct-target-node-zoo",
+    "id": "ghost-express-cms-lab",
+    "ip": "10.190.190.97",
+    "name": "Ghost Express CMS Lab",
+    "port": 18177,
+    "revision": "cefbaf438016c22f26b12042c4968c01aa75c691"
+  },
+  {
+    "coverage": "Laravel-style PHP framework routing, blade template, debug, storage, and CSRF form surfaces distinct from CMS/classic PHP apps.",
+    "endpoints": [
+      [
+        "/",
+        "Laravel lab index"
+      ],
+      [
+        "/debug/ignition",
+        "Debug route"
+      ],
+      [
+        "/storage/logs/app.log",
+        "Storage route"
+      ],
+      [
+        "/form/profile",
+        "CSRF form shape"
+      ],
+      [
+        "/api/user/1",
+        "API user shape"
+      ]
+    ],
+    "host": "ct-target-legacy-web-zoo",
+    "host_bundle": "ct-target-legacy-web-zoo",
+    "id": "laravel-larabug-lab",
+    "ip": "10.190.190.96",
+    "name": "Laravel LaraBug Lab",
+    "port": 18178,
+    "revision": "7d5f836bb054483e29c59b0676edc4a9261493cf"
+  },
+  {
+    "coverage": "Spring Boot actuator, MVC, JSON error, and Java route coverage beyond WebGoat, Petclinic, and BenchmarkJava.",
+    "endpoints": [
+      [
+        "/",
+        "Spring Boot lab index"
+      ],
+      [
+        "/actuator",
+        "Actuator index"
+      ],
+      [
+        "/actuator/env",
+        "Actuator env shape"
+      ],
+      [
+        "/api/users/1",
+        "User API"
+      ],
+      [
+        "/error",
+        "Error route"
+      ]
+    ],
+    "host": "ct-target-legacy-web-zoo",
+    "host_bundle": "ct-target-legacy-web-zoo",
+    "id": "spring-boot-vuln-lab",
+    "ip": "10.190.190.96",
+    "name": "Spring Boot Vulnerable Lab",
+    "port": 18179,
+    "revision": "278c7973328be9adc7b60b258fb621f96634eb01"
+  },
+  {
+    "coverage": "Struts-style actions, OGNL-shaped parameters, upload, and Java MVC routing under strict lab isolation.",
+    "endpoints": [
+      [
+        "/",
+        "Struts lab index"
+      ],
+      [
+        "/struts2-showcase/index.action",
+        "Showcase action"
+      ],
+      [
+        "/struts2-showcase/upload.action",
+        "Upload action"
+      ],
+      [
+        "/struts2-showcase/debug.action",
+        "Debug action"
+      ],
+      [
+        "/struts2-showcase/json.action",
+        "JSON action"
+      ]
+    ],
+    "host": "ct-target-legacy-web-zoo",
+    "host_bundle": "ct-target-legacy-web-zoo",
+    "id": "struts-showcase-lab",
+    "ip": "10.190.190.96",
+    "name": "Apache Struts Showcase Lab",
+    "port": 18180,
+    "revision": "5d5a4f08e934990fed706e9d418b473c5218c0ba"
+  },
+  {
+    "coverage": "Legacy CMS/e-commerce route, admin, module, asset, and install-surface coverage beyond Drupal, Joomla, Magento, and WordPress.",
+    "endpoints": [
+      [
+        "/",
+        "Legacy CMS index"
+      ],
+      [
+        "/typo3/",
+        "TYPO3 admin shape"
+      ],
+      [
+        "/prestashop/admin-dev/",
+        "PrestaShop admin shape"
+      ],
+      [
+        "/modules/payments/callback",
+        "Module callback"
+      ],
+      [
+        "/install/",
+        "Install shape"
+      ]
+    ],
+    "host": "ct-target-legacy-web-zoo",
+    "host_bundle": "ct-target-legacy-web-zoo",
+    "id": "typo3-prestashop-legacy-lab",
+    "ip": "10.190.190.96",
+    "name": "TYPO3 PrestaShop Legacy Lab",
+    "port": 18181,
+    "revision": "f188a219c1444ee167710833a35edbedbde85b2f"
+  },
+  {
+    "coverage": "Additional deterministic cache deception path, suffix, content-type, and private-page variants for cache scanners.",
+    "endpoints": [
+      [
+        "/",
+        "Cache deception variants"
+      ],
+      [
+        "/account/profile.css",
+        "Private suffix variant"
+      ],
+      [
+        "/private/invoice.jpg",
+        "Private file-like variant"
+      ],
+      [
+        "/api/me.js",
+        "API script-like variant"
+      ],
+      [
+        "/static/cacheable.css",
+        "Static control"
+      ]
+    ],
+    "host": "ct-target-holdout",
+    "host_bundle": "ct-target-holdout",
+    "id": "cache-deception-variants-lab",
+    "ip": "10.190.190.95",
+    "name": "Web Cache Deception Variants Lab",
+    "port": 18182,
+    "revision": "732b6562839ae7e18183646ac61d4e88df9bc124"
+  },
+  {
+    "coverage": "Safe SSRF and cloud-metadata simulation endpoints without real cloud metadata exposure or callbacks.",
+    "endpoints": [
+      [
+        "/",
+        "SSRF metadata simulator"
+      ],
+      [
+        "/fetch",
+        "Fetch shape"
+      ],
+      [
+        "/metadata/latest/meta-data/",
+        "Metadata root"
+      ],
+      [
+        "/metadata/latest/user-data",
+        "Metadata user-data shape"
+      ],
+      [
+        "/internal/admin",
+        "Internal admin shape"
+      ]
+    ],
+    "host": "ct-target-holdout",
+    "host_bundle": "ct-target-holdout",
+    "id": "ssrf-metadata-sim-lab",
+    "ip": "10.190.190.95",
+    "name": "SSRF Metadata Simulation Lab",
+    "port": 18183,
+    "revision": "82ac239856f7573c324b8bb6f7b51b69a2c0fb31"
+  },
+  {
+    "coverage": "Deterministic CORS, JWT, CSP, HSTS, security-header, and auth-boundary misconfiguration variants.",
+    "endpoints": [
+      [
+        "/",
+        "CORS JWT header lab"
+      ],
+      [
+        "/cors/open",
+        "CORS open shape"
+      ],
+      [
+        "/jwt/none",
+        "JWT none-alg shape"
+      ],
+      [
+        "/headers/missing",
+        "Missing headers"
+      ],
+      [
+        "/auth/boundary",
+        "Auth boundary shape"
+      ]
+    ],
+    "host": "ct-target-holdout",
+    "host_bundle": "ct-target-holdout",
+    "id": "cors-jwt-header-misconfig-lab",
+    "ip": "10.190.190.95",
+    "name": "CORS JWT Header Misconfiguration Lab",
+    "port": 18184,
+    "revision": "7efb6edc7b1a90126083a45902c1fec026e943dc"
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "coverage": "LMS roles, uploads, grading, course enrollment, and workflow authorization coverage",
+  "host": "ct-target-legacy-web-zoo",
+  "id": "moodle-oldversion-lab",
+  "ip": "10.190.190.96",
+  "name": "Moodle Old-Version Lab",
+  "platform": "linux",
+  "port": 18203,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/moodle/moodle"
+}

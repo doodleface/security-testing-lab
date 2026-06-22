@@ -1,0 +1,23 @@
+﻿@using YAF.Core.Context
+@using YAF.Types.Interfaces
+@using YAF.Core.Extensions
+@using YAF.Core.Helpers
+@using YAF.Core.Utilities
+
+@inject BoardContext Current
+
+@RenderBody()
+
+<script src="~/js/forumExtensions.min.js" asp-append-version="true"></script>
+
+@await Html.PartialAsync("_ToastMessages")
+@await Html.PartialAsync("_JsBlockStartup")
+@await Html.PartialAsync("_BootboxConfirm")
+
+
+<script>
+    @if (Current.Get<IPermissions>().Check(Current.BoardSettings.ProfileViewPermissions) || Current.BoardSettings.EnableUserInfoHoverCards)
+    {
+        @Html.Raw(JsAndCssHelper.CompressJavaScript(JavaScriptBlocks.HoverCardJs()))
+    }
+</script>

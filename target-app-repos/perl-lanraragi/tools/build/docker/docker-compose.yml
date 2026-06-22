@@ -1,0 +1,27 @@
+---
+# Docker compose file for dev environments.
+services:
+  lanraragi:
+    build:
+      dockerfile: tools/build/docker/Dockerfile-dev
+      context: ../../..
+    volumes:
+      - ../../../:/home/koyomi/lanraragi
+    ports:
+      - "3000:3000"
+    depends_on:
+     - redis
+    environment:
+      - "LRR_REDIS_ADDRESS=redis:6379"
+
+  redis:
+    image: "docker.io/valkey/valkey:9"
+    volumes:
+      - redis_data:/data
+
+networks:
+  default:
+    name: lrr
+
+volumes:
+  redis_data:

@@ -1,0 +1,72 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information
+
+namespace DotNetNuke.Services.FileSystem.Internal
+{
+    using System;
+
+    using DotNetNuke.Common;
+    using DotNetNuke.Common.Utilities;
+    using DotNetNuke.Entities.Content.Workflow;
+    using DotNetNuke.Framework;
+
+    using Microsoft.Extensions.DependencyInjection;
+
+    public class FileLockingController : ServiceLocator<IFileLockingController, FileLockingController>, IFileLockingController
+    {
+        /// <inheritdoc />
+        public bool IsFileLocked(IFileInfo file, out string lockReasonKey)
+        {
+            lockReasonKey = string.Empty;
+
+            var allowedUser = UserSecurityController.Instance.IsHostAdminUser(file.PortalId);
+            if (allowedUser)
+            {
+                return false;
+            }
+
+            if (file.ContentItemID != Null.NullInteger)
+            {
+                var workflowCompleted = WorkflowEngine.Instance.IsWorkflowCompleted(file.ContentItemID);
+                if (!workflowCompleted)
+                {
+                    lockReasonKey = "FileLockedRunningWorkflowError";
+                    return true;
+                }
+            }
+
+            var outOfPublishPeriod = IsFileOutOfPublishPeriod(file);
+            if (outOfPublishPeriod)
+            {
+                lockReasonKey = "FileLockedOutOfPublishPeriodError";
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc />
+        public bool IsFileOutOfPublishPeriod(IFileInfo file, int portalId, int userId)
+        {
+            if (UserSecurityController.Instance.IsHostAdminUser(portalId, userId))
+            {
+                return false;
+            }
+
+            return IsFileOutOfPublishPeriod(file);
+        }
+
+        /// <inheritdoc />
+        protected override Func<IFileLockingController> GetFactory()
+        {
+            return () => Globals.DependencyProvider.GetRequiredService<IFileLockingController>();
+        }
+
+        private static bool IsFileOutOfPublishPeriod(IFileInfo file)
+        {
+            // Publish Period locks
+            return file.EnablePublishPeriod && (file.StartDate > DateTime.Today || (file.EndDate < DateTime.Today && file.EndDate != Null.NullDate));
+        }
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "app_id": "graphql-voyager-demo",
+  "coverage": "Additional GraphQL schema and voyager-style introspection endpoint for GraphQL adapter diversity beyond DVGA.",
+  "endpoints": [
+    "/",
+    "/graphql",
+    "/voyager",
+    "/schema"
+  ],
+  "name": "GraphQL Voyager Demo API",
+  "recommended_host": "ct-target-holdout",
+  "runtime_url": "http://10.190.190.95:18172/"
+}

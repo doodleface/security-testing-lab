@@ -1,0 +1,11 @@
+{
+  "coverage": "CI job configuration, plugin surface, build log metadata, and RBAC workflow coverage",
+  "host": "ct-target-holdout",
+  "id": "jenkins-rbac-lab",
+  "ip": "10.190.190.95",
+  "name": "Jenkins Plugin RBAC Lab",
+  "platform": "linux",
+  "port": 18209,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/jenkinsci/jenkins"
+}

@@ -1,0 +1,10 @@
+services:
+  tls-nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "9444:443"
+  legacy-openssl:
+    image: alpine:3.20
+    command: ["sh", "-c", "sleep infinity"]
+    ports:
+      - "9445:443"

@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  ws-fixture:
+    image: python:3.12-slim
+    container_name: securitytestinglab-ws-fixture
+    command: ["python", "-m", "http.server", "9001"]
+    ports:
+      - "9001:9001"
+    environment:
+      CT_HARNESS_ID: FIX-HARNESS-STREAMING-WS-01
+
+  sse-fixture:
+    image: python:3.12-slim
+    container_name: securitytestinglab-sse-fixture
+    command: ["python", "-m", "http.server", "9002"]
+    ports:
+      - "9002:9002"
+    environment:
+      CT_HARNESS_ID: FIX-HARNESS-STREAMING-SSE-01
+
+  grpc-fixture:
+    image: python:3.12-slim
+    container_name: securitytestinglab-grpc-fixture
+    command: ["python", "-m", "http.server", "9003"]
+    ports:
+      - "9003:9003"
+    environment:
+      CT_HARNESS_ID: FIX-HARNESS-STREAMING-GRPC-01
+
+# Canonical purpose:
+# 1. positive and negative protocol replay controls for WP34
+# 2. transcript capture and anomaly cue generation for WP33/WP35

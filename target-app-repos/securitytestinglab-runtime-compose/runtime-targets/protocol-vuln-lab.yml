@@ -1,0 +1,29 @@
+services:
+  ws-sse-lab:
+    build:
+      context: ../../../tests/fixtures/runtime_targets/protocol_lab/ws_sse_lab
+    container_name: securitytestinglab-ws-sse-lab
+    restart: unless-stopped
+    ports:
+      - "${WS_SSE_LAB_BIND_HOST:-0.0.0.0}:${WS_SSE_LAB_PORT:-8082}:8082"
+
+  grpc-lab:
+    build:
+      context: ../../../tests/fixtures/runtime_targets/protocol_lab/grpc_lab
+    container_name: securitytestinglab-grpc-lab
+    restart: unless-stopped
+    volumes:
+      - ../../../config/local/runtime-targets/protocol-harness-certs:/certs:ro
+    ports:
+      - "${GRPC_LAB_BIND_HOST:-0.0.0.0}:${GRPC_LAB_PORT:-50051}:50051"
+      - "${GRPC_LAB_BIND_HOST:-0.0.0.0}:${GRPC_LAB_TLS_PORT:-50052}:50052"
+
+  h2-lab:
+    build:
+      context: ../../../tests/fixtures/runtime_targets/protocol_lab/h2_lab
+    container_name: securitytestinglab-h2-lab
+    restart: unless-stopped
+    volumes:
+      - ../../../config/local/runtime-targets/protocol-harness-certs:/certs:ro
+    ports:
+      - "${H2_LAB_BIND_HOST:-0.0.0.0}:${H2_LAB_PORT:-9443}:9443"

@@ -1,0 +1,157 @@
+@import "../../styles/index";
+
+.dnn-uicommon-tags-field-input {
+    background: var(--dnn-color-background, #fff);
+    float: left;
+    width: 100%;
+    border: 1px solid var(--dnn-color-foreground-light, @mountainMist);
+    box-sizing: border-box;
+    position: relative;
+    border-radius: var(--dnn-controls-radius, 0px);
+    font-size: 13px !important;
+    font-family: proxima_nova,Arial !important;
+
+    * {
+        box-sizing: content-box !important;
+    }
+
+    &.error {
+        border-bottom: 2px solid var(--dnn-color-danger, red);
+    }
+    &.disabled {
+        &, * {
+            pointer-events: none;
+        }
+        background: var(--dnn-color-neutral, @mercury);
+        border-color: var(--dnn-color-neutral, @mercury);
+        .tag {
+            background: var(--dnn-color-neutral-dark, @alto);
+        }
+    }
+    &.active {
+        border: 1px solid var(--dnn-color-primary, @curiousBlue);
+    }
+    div[type="text"] {
+        width: 100%;
+        padding: 0px !important;
+        height: auto;
+        float: left;
+        margin: 0 !important;
+    }
+
+    .input-container {
+        float: left;
+        position: relative;
+    }
+
+    .suggestions-container {
+        position: relative;
+        float: left;
+        width: 100%;
+
+        .suggestions {
+            position: absolute;
+            left: -11px;
+            top: -9px;
+            padding: 10px;
+            list-style-type: none;
+            width: 100%;
+            z-index: 9999;
+
+            .suggestion {
+                color: gray;
+                padding: 9px;
+                background-color: var(--dnn-color-background, #FFFFFF);
+                cursor: pointer;
+                margin: 0px;
+                list-style: none;
+                height: 15px;
+
+                &:hover {
+                    background-color: var(--dnn-color-primary-contrast, @gallery);
+                    color: var(--dnn-color-primary, @curiousBlue);
+                }
+
+                &.selected {
+                    background-color: var(--dnn-color-primary, @curiousBlue);
+                    color: var(--dnn-color-primary-contrast, @gallery);
+                }
+            }
+        }
+    }
+    
+    input {
+        padding: 0;
+        padding: 9px 12px;
+        background: transparent;
+        border: none;
+        color: var(--dnn-color-foreground, @bulgarianRose);
+        float: left;
+        box-sizing: content-box !important;
+        outline: none !important;
+        max-width: calc(100% - 24px);
+
+        &::-ms-clear, &::-ms-reveal {
+            display: none; width : 0; height: 0;
+        }
+    }
+    .dnn-uicommon-tag-input {
+        float: left;
+        position: relative;
+        padding: 3px 18px 3px 7px !important;
+        margin: 7px 0 5px 9px !important;
+        background: var(--dnn-color-primary, @seagull);
+        border: none;
+        border-radius: var(--dnn-controls-radius, 0px);
+        color: var(--dnn-color-primary-contrast, white);
+        font-size: 11px;
+        max-width: calc(100% - 18px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        .close {
+            position: absolute;
+            padding: 0 5px;
+            font-size: 16px;
+            line-height: 26px;
+            cursor: pointer;
+            right: 0px;
+            top: -1px;
+        }
+    }
+    .dnn-uicommon-tag-input.disabled{
+         padding: 3px 7px 3px 7px !important;
+    }
+    .tag-search-results {
+        position: absolute;
+        width: 100%;
+        border: 1px solid var(--dnn-color-foreground-light, @mountainMist);
+        top: 100%;
+        margin-top: 1px;
+        border-top: none;
+        left: -1px;
+        padding: 6px 0px;
+        background: var(--dnn-color-background, white);
+        .result-item {
+            padding: 6px 10px;
+            cursor: pointer;
+            &.selected {
+                background: var(--dnn-color-primary-light, @gallery);
+                color: var(--dnn-color-primary-contrast, @curiousBlue);
+            }
+        }
+    }
+    .dnn-ui-common-tooltip {
+        position: absolute;
+        right: 0px;
+        .icon {
+            float: right;
+            margin-top: 6px;
+            margin-right: 4px;
+        }
+    }
+}
+
+.dnn-uicommon-tags-field-input.disabled {
+    background: @mercury;
+    border-color: @mercury;
+}

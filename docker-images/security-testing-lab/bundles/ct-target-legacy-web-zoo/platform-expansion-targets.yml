@@ -1,0 +1,34 @@
+services:
+  securitytestinglab-moodle-oldversion-lab:
+    build:
+      context: ./moodle-oldversion-lab
+    image: securitytestinglab/moodle-oldversion-lab:local
+    container_name: securitytestinglab-moodle-oldversion-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18203:8080"
+    labels:
+      securitytestinglab.app_id: "moodle-oldversion-lab"
+      securitytestinglab.coverage: "LMS roles, uploads, grading, course enrollment, and workflow authorization coverage"
+  securitytestinglab-phpbb-forum-lab:
+    build:
+      context: ./phpbb-forum-lab
+    image: securitytestinglab/phpbb-forum-lab:local
+    container_name: securitytestinglab-phpbb-forum-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18204:8080"
+    labels:
+      securitytestinglab.app_id: "phpbb-forum-lab"
+      securitytestinglab.coverage: "Forum workflows, BBCode rendering, moderation, plugin, and session coverage"
+  securitytestinglab-mediawiki-extension-lab:
+    build:
+      context: ./mediawiki-extension-lab
+    image: securitytestinglab/mediawiki-extension-lab:local
+    container_name: securitytestinglab-mediawiki-extension-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18205:8080"
+    labels:
+      securitytestinglab.app_id: "mediawiki-extension-lab"
+      securitytestinglab.coverage: "Wiki templates, page history, extension routes, and permission-boundary coverage"

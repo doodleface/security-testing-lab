@@ -1,0 +1,14 @@
+{
+  "app_id": "cache-deception-variants-lab",
+  "coverage": "Additional deterministic cache deception path, suffix, content-type, and private-page variants for cache scanners.",
+  "endpoints": [
+    "/",
+    "/account/profile.css",
+    "/private/invoice.jpg",
+    "/api/me.js",
+    "/static/cacheable.css"
+  ],
+  "name": "Web Cache Deception Variants Lab",
+  "recommended_host": "ct-target-holdout",
+  "runtime_url": "http://10.190.190.95:18182/"
+}

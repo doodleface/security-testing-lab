@@ -1,0 +1,14 @@
+{
+  "app_id": "ssrf-metadata-sim-lab",
+  "coverage": "Safe SSRF and cloud-metadata simulation endpoints without real cloud metadata exposure or callbacks.",
+  "endpoints": [
+    "/",
+    "/fetch",
+    "/metadata/latest/meta-data/",
+    "/metadata/latest/user-data",
+    "/internal/admin"
+  ],
+  "name": "SSRF Metadata Simulation Lab",
+  "recommended_host": "ct-target-holdout",
+  "runtime_url": "http://10.190.190.95:18183/"
+}

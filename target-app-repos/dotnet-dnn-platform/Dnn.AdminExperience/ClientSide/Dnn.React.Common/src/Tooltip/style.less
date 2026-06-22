@@ -1,0 +1,129 @@
+@import "../../styles/index";
+.dnn-ui-common-tooltip {   
+    >div{
+        position: relative;
+    }    
+    .tooltip-overlay{
+        display: block;
+        font-family: Open Sans,sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: all 300ms ease-in-out;
+        display:flex;
+        justify-content: center;
+        min-width:200px;
+        z-index:50;
+        visibility: visible;
+        .tooltip-inner{
+            background-color: var(--dnn-color-surface, rgb(75, 78, 79));
+            color: var(--dnn-color-surface-contrast, #fff);
+            padding:5px 10px;
+            border: 1px solid var(--dnn-color-surface-dark, rgb(40, 40, 40));
+            border-radius: var(--dnn-controls-radius, 5px);
+            position: relative;
+            font-family: proxima_nova, HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            &::before{
+                position: absolute;
+                display: block;
+                content: "";
+                left: 50%;
+                right: 0;
+                border: 16px solid transparent;
+                margin-left: -16px;
+                width: 0;
+                height: 0;
+            }
+        }
+        &.top{
+            bottom: 100%;
+            padding-bottom: 16px;
+            ::before{
+                top:100%
+            }
+        }
+        &.bottom{
+            top: 100%;
+            padding-top:16px;
+            ::before{
+                bottom:100%;
+            }
+        }        
+        
+        &.tooltip-overlay--hidden{
+            opacity:0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+    } 
+    &.error {
+        .icon svg {
+            color: var(--dnn-color-danger, @alizarinCrimson);
+            fill: var(--dnn-color-danger, @alizarinCrimson);
+        }
+        .tooltip-inner{
+            background-color: var(--dnn-color-danger, @alizarinCrimson);
+            color: var(--dnn-color-danger-contrast, #fff);
+        }  
+        .top .tooltip-inner::before{
+            border-top-color: var(--dnn-color-danger, @alizarinCrimson);
+        }
+        .bottom .tooltip-inner::before{
+            border-bottom-color: var(--dnn-color-danger, @alizarinCrimson);
+        }
+    }
+    &.warning {
+        .icon svg {
+            color: var(--dnn-color-warning, #EA9C00);
+            fill: var(--dnn-color-warning, #EA9C00);
+        }
+        .tooltip-inner{
+            background-color: var(--dnn-color-warning, #EA9C00);
+            color: var(--dnn-color-warning-contrast, #fff);
+        }  
+        .top .tooltip-inner::before{
+            border-top-color: var(--dnn-color-warning, #EA9C00);
+        }
+        .bottom .tooltip-inner::before{
+            border-bottom-color: var(--dnn-color-warning, #EA9C00);
+        }
+    }
+    &.info {
+        .icon svg {
+            color: var(--dnn-color-neutral, @alto);
+            fill: var(--dnn-color-neutral, @alto);
+        }
+        .tooltip-inner{
+            background-color: var(--dnn-color-info, @thunder);
+            color: var(--dnn-color-info-contrast, #fff);
+        }  
+        .top .tooltip-inner::before{
+            border-top-color: var(--dnn-color-info, @thunder);
+        }
+        .bottom .tooltip-inner::before{
+            border-bottom-color: var(--dnn-color-info, @thunder);
+        }
+    }
+    &.global {
+        .icon svg {
+            color: var(--dnn-color-info, @cerulean);
+            fill: var(--dnn-color-info, @cerulean);
+        }
+        .tooltip-inner{
+            background-color: var(--dnn-color-info, @cerulean);
+            color: var(--dnn-color-info-contrast, #fff);
+        }  
+        .top .tooltip-inner::before{
+            border-top-color: var(--dnn-color-info, @cerulean);
+        }
+        .bottom .tooltip-inner::before{
+            border-bottom-color: var(--dnn-color-info, @cerulean);
+        }   
+    }
+    .icon svg {
+        width: 20px;
+        height: 20px;
+    }    
+}

@@ -1,0 +1,44 @@
+next-version: 9.6.0
+commit-date-format: 'yyyyMMdd'
+assembly-file-versioning-format: '{Major}.{Minor}.{Patch}.{CommitsSinceVersionSource}'
+mode: ContinuousDeployment
+ignore:
+  commits-before: 2023-01-01T00:00:00
+branches:
+  future:
+    regex: ^future?[/-]
+    label: 'alpha'
+    increment: Major
+    source-branches: []
+  development:
+    regex: ^development$
+    label: 'alpha'
+    increment: Major
+    source-branches: []
+  develop:
+    regex: ^develop$
+    label: 'alpha'
+    increment: Patch
+    is-main-branch: true
+    source-branches: []
+    tracks-release-branches: false
+  release:
+    regex: ^release?[/-]
+    mode: ContinuousDelivery
+    label: 'rc'
+    increment: Patch
+    prevent-increment:
+        of-merged-branch: true
+        when-current-commit-tagged: true
+    track-merge-target: false
+    tracks-release-branches: false
+    is-release-branch: true
+    source-branches: []
+  pull-request:
+    regex: ^(pull-requests|pull|pr)[\/-](?<Number>\d*)
+    label: 'pr{Number}'
+    increment: Patch
+    prevent-increment:
+        of-merged-branch: true
+    is-release-branch: false
+    source-branches: []

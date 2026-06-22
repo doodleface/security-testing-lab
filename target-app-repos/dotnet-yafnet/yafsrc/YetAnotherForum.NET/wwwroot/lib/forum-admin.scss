@@ -1,0 +1,72 @@
+﻿@use "prism";
+
+@use "fontawesome/fontawesome-all";
+
+// Forum imports
+@use "forum/attachments-upload.scss";
+@use "forum/dropdowns.scss";
+@use "forum/cookie-alert.scss";
+@use "forum/button-scroll.scss";
+
+// Main
+#YafBody {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.list-inline {
+    margin: 0;
+}
+
+// Event log
+.pre-scrollable {
+    overflow: auto;
+    white-space: pre-line;
+}
+
+.img-navbar-avatar {
+    position: relative;
+    margin-bottom: 0;
+    display: inline-block;
+    min-width: 0.9rem;
+    max-width: 1.2rem;
+    max-height: 1.2rem;
+    font-size: 2rem;
+    vertical-align: middle;
+}
+
+// Unread Icon
+.unread {
+    position: absolute;
+    top: 8px;
+    left: 16px;
+}
+
+// Tabs
+.tab-content {
+    padding-top: 10px;
+}
+
+// host settings tabs
+@media (min-width: 768px) {
+    .nav-settings {
+        flex-direction: column !important
+    }
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
+}
+
+.chart-container {
+    margin: 0 auto;
+}
+
+.dropdown-mentions {
+    max-height: 200px;
+    margin-bottom: 10px;
+    overflow: scroll;
+}

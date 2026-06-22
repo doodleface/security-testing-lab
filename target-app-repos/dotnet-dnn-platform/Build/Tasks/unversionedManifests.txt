@@ -1,0 +1,6 @@
+DNN Platform/Components/**/*.dnn
+DNN Platform/JavaScript Libraries/HoverIntent/*.dnn
+DNN Platform/JavaScript Libraries/jQuery*/*.dnn
+DNN Platform/JavaScript Libraries/Knockout*/*.dnn
+DNN Platform/JavaScript Libraries/Selectize/*.dnn
+Temp/**/*.dnn

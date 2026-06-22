@@ -1,0 +1,462 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information
+namespace DotNetNuke.Entities.Portals
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+
+    using DotNetNuke.Abstractions.Application;
+    using DotNetNuke.Abstractions.Logging;
+    using DotNetNuke.Abstractions.Portals;
+    using DotNetNuke.Common;
+    using DotNetNuke.Common.Utilities;
+    using DotNetNuke.ComponentModel;
+    using DotNetNuke.Entities.Modules;
+    using DotNetNuke.Entities.Portals.Data;
+    using DotNetNuke.Entities.Profile;
+    using DotNetNuke.Entities.Users;
+    using DotNetNuke.Instrumentation;
+    using DotNetNuke.Security.Roles;
+    using DotNetNuke.Services.Log.EventLog;
+
+    using Microsoft.Extensions.DependencyInjection;
+
+    /// <summary>The default <see cref="IPortalGroupController"/> implementation.</summary>
+    public class PortalGroupController : ComponentBase<IPortalGroupController, PortalGroupController>, IPortalGroupController
+    {
+        private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(PortalGroupController));
+        private readonly IDataService dataService;
+        private readonly IPortalController portalController;
+        private readonly IHostSettings hostSettings;
+
+        /// <summary>Initializes a new instance of the <see cref="PortalGroupController"/> class.</summary>
+        [Obsolete("Deprecated in DotNetNuke 10.2.2. Please use overload with IHostSettings. Scheduled removal in v12.0.0.")]
+        public PortalGroupController()
+            : this(null, null, null)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="PortalGroupController"/> class.</summary>
+        /// <param name="dataService">The data service.</param>
+        /// <param name="portalController">The portal controller.</param>
+        [Obsolete("Deprecated in DotNetNuke 10.2.2. Please use overload with IHostSettings. Scheduled removal in v12.0.0.")]
+        public PortalGroupController(IDataService dataService, IPortalController portalController)
+            : this(dataService, portalController, null)
+        {
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="PortalGroupController"/> class.</summary>
+        /// <param name="dataService">The data service.</param>
+        /// <param name="portalController">The portal controller.</param>
+        /// <param name="hostSettings">The host settings.</param>
+        public PortalGroupController(IDataService dataService, IPortalController portalController, IHostSettings hostSettings)
+        {
+            this.dataService = dataService ?? Globals.GetCurrentServiceProvider().GetRequiredService<IDataService>();
+            this.portalController = portalController ?? Globals.GetCurrentServiceProvider().GetRequiredService<IPortalController>();
+            this.hostSettings = hostSettings ?? Globals.GetCurrentServiceProvider().GetRequiredService<IHostSettings>();
+        }
+
+        /// <inheritdoc />
+        public void AddPortalToGroup(PortalInfo portal, PortalGroupInfo portalGroup, UserCopiedCallback callback)
+        {
+            Requires.NotNull("portal", portal);
+            Requires.PropertyNotNegative("portal", "PortalId", ((IPortalInfo)portal).PortalId);
+            Requires.NotNull("portalGroup", portalGroup);
+            Requires.PropertyNotNegative("portalGroup", "PortalGroupId", portalGroup.PortalGroupId);
+            Requires.PropertyNotNegative("portalGroup", "MasterPortalId", portalGroup.MasterPortalId);
+
+            OnAddPortalToGroupStart(callback, portal);
+
+            var users = UserController.GetUsers(((IPortalInfo)portal).PortalId);
+            var masterUsers = UserController.GetUsers(portalGroup.MasterPortalId);
+            var totalUsers = users.Count + masterUsers.Count;
+            var userNo = 0;
+
+            if (users.Count > 0)
+            {
+                var masterPortal = this.portalController.GetPortal(portalGroup.MasterPortalId);
+
+                foreach (UserInfo user in users)
+                {
+                    userNo += 1;
+
+                    UserController.MoveUserToPortal(user, masterPortal, true);
+
+                    OnUserAddedToSiteGroup(callback, portal, user, totalUsers, userNo);
+                }
+            }
+
+            if (masterUsers.Count > 0)
+            {
+                var autoAssignRoles = RoleController.Instance.GetRoles(
+                    ((IPortalInfo)portal).PortalId,
+                    role => role.AutoAssignment && role.Status == RoleStatus.Approved);
+                foreach (UserInfo user in masterUsers)
+                {
+                    userNo += 1;
+                    foreach (var autoAssignRole in autoAssignRoles)
+                    {
+                        RoleController.Instance.AddUserRole(portalGroup.MasterPortalId, user.UserID, autoAssignRole.RoleID, RoleStatus.Approved, false, Null.NullDate, Null.NullDate);
+                    }
+
+                    OnUserAddedToSiteGroup(callback, portal, user, totalUsers, userNo);
+                }
+            }
+
+            OnAddPortalToGroupFinishing(callback, portal, users.Count);
+
+            RemoveProfileDefinitions(portal);
+
+            // Add portal to group
+            ((IPortalInfo)portal).PortalGroupId = portalGroup.PortalGroupId;
+            PortalController.Instance.UpdatePortalInfo(portal);
+            LogEvent(nameof(EventLogType.PORTAL_ADDEDTOPORTALGROUP), portalGroup, portal);
+
+            OnAddPortalToGroupFinished(callback, portal, portalGroup, users.Count);
+        }
+
+        /// <inheritdoc />
+        public int AddPortalGroup(PortalGroupInfo portalGroup)
+        {
+            // Argument Contract
+            Requires.NotNull("portalGroup", portalGroup);
+
+            portalGroup.PortalGroupId = this.dataService.AddPortalGroup(portalGroup, UserController.Instance.GetCurrentUserInfo().UserID);
+
+            // Update portal
+            var portal = this.portalController.GetPortal(portalGroup.MasterPortalId);
+            if (portal != null)
+            {
+                ((IPortalInfo)portal).PortalGroupId = portalGroup.PortalGroupId;
+                this.portalController.UpdatePortalInfo(portal);
+            }
+
+            LogEvent(nameof(EventLogType.PORTALGROUP_CREATED), portalGroup, null);
+
+            ClearCache();
+
+            return portalGroup.PortalGroupId;
+        }
+
+        /// <inheritdoc />
+        public void DeletePortalGroup(PortalGroupInfo portalGroup)
+        {
+            // Argument Contract
+            Requires.NotNull("portalGroup", portalGroup);
+            Requires.PropertyNotNegative("portalGroup", "PortalGroupId", portalGroup.PortalGroupId);
+
+            // Update portal
+            var portal = this.portalController.GetPortal(portalGroup.MasterPortalId);
+            if (portal != null)
+            {
+                this.DeleteSharedModules(portal);
+                ((IPortalInfo)portal).PortalGroupId = -1;
+                PortalController.Instance.UpdatePortalInfo(portal);
+            }
+
+            this.dataService.DeletePortalGroup(portalGroup);
+            LogEvent(nameof(EventLogType.PORTALGROUP_DELETED), portalGroup, null);
+
+            ClearCache();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<PortalGroupInfo> GetPortalGroups()
+        {
+            return CBO.GetCachedObject<IEnumerable<PortalGroupInfo>>(
+                this.hostSettings,
+                new CacheItemArgs(
+                    DataCache.PortalGroupsCacheKey,
+                    DataCache.PortalGroupsCacheTimeOut,
+                    DataCache.PortalGroupsCachePriority),
+                this.GetPortalGroupsCallback);
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<PortalInfo> GetPortalsByGroup(int portalGroupId)
+        {
+            var portals = PortalController.Instance.GetPortals();
+            return portals.Cast<PortalInfo>()
+                            .Where(portal => ((IPortalInfo)portal).PortalGroupId == portalGroupId)
+                            .ToList();
+        }
+
+        /// <inheritdoc />
+        public void RemovePortalFromGroup(PortalInfo portal, PortalGroupInfo portalGroup, bool copyUsers, UserCopiedCallback callback)
+        {
+            // Argument Contract
+            Requires.NotNull("portal", portal);
+            Requires.PropertyNotNegative("portal", "PortalId", ((IPortalInfo)portal).PortalId);
+            Requires.NotNull("portalGroup", portalGroup);
+            Requires.PropertyNotNegative("portalGroup", "PortalGroupId", portalGroup.PortalGroupId);
+            Requires.PropertyNotNegative("portalGroup", "MasterPortalId", portalGroup.MasterPortalId);
+
+            // Callback to update progress bar
+            var args = new UserCopiedEventArgs
+            {
+                TotalUsers = 0,
+                UserNo = 0,
+                UserName = string.Empty,
+                PortalName = portal.PortalName,
+                Stage = "startingremove",
+            };
+            callback(args);
+
+            // Remove portal from group
+            this.DeleteSharedModules(portal);
+            ((IPortalInfo)portal).PortalGroupId = -1;
+            PortalController.Instance.UpdatePortalInfo(portal);
+            LogEvent(nameof(EventLogType.PORTAL_REMOVEDFROMPORTALGROUP), portalGroup, portal);
+
+            CopyPropertyDefinitions(((IPortalInfo)portal).PortalId, portalGroup.MasterPortalId);
+
+            var userNo = 0;
+            if (copyUsers)
+            {
+                var users = UserController.GetUsers(portalGroup.MasterPortalId);
+                foreach (UserInfo masterUser in users)
+                {
+                    userNo += 1;
+
+                    UserController.CopyUserToPortal(masterUser, portal, false);
+
+                    // Callback to update progress bar
+                    args = new UserCopiedEventArgs
+                    {
+                        TotalUsers = users.Count,
+                        UserNo = userNo,
+                        UserName = masterUser.Username,
+                        PortalName = portal.PortalName,
+                    };
+
+                    callback(args);
+                }
+            }
+            else
+            {
+                // Get admin users
+                var adminUsers = RoleController.Instance.GetUsersByRole(Null.NullInteger, portal.AdministratorRoleName)
+                    .Where(u => RoleController.Instance.GetUserRole(((IPortalInfo)portal).PortalId, u.UserID, portal.AdministratorRoleId) != null);
+
+                foreach (var user in adminUsers)
+                {
+                    UserController.CopyUserToPortal(user, portal, false);
+
+                    // Callback to update progress bar
+                    args = new UserCopiedEventArgs
+                    {
+                        TotalUsers = 1,
+                        UserNo = ++userNo,
+                        UserName = user.Username,
+                        PortalName = portal.PortalName,
+                    };
+
+                    callback(args);
+                }
+            }
+
+            // Callback to update progress bar
+            args = new UserCopiedEventArgs
+            {
+                TotalUsers = 1,
+                UserNo = userNo,
+                UserName = string.Empty,
+                PortalName = portal.PortalName,
+                Stage = "finishedremove",
+                PortalGroupId = portalGroup.PortalGroupId,
+            };
+            callback(args);
+        }
+
+        /// <inheritdoc />
+        public void UpdatePortalGroup(PortalGroupInfo portalGroup)
+        {
+            // Argument Contract
+            Requires.NotNull("portalGroup", portalGroup);
+            Requires.PropertyNotNegative("portalGroup", "PortalGroupId", portalGroup.PortalGroupId);
+
+            this.dataService.UpdatePortalGroup(portalGroup, UserController.Instance.GetCurrentUserInfo().UserID);
+
+            ClearCache();
+        }
+
+        /// <inheritdoc />
+        public bool IsModuleShared(int moduleId, PortalInfo portal)
+        {
+            if (portal == null)
+            {
+                return false;
+            }
+
+            return this.GetSharedModulesWithPortal(portal).Any(x => x.ModuleID == moduleId && !x.IsDeleted) || this.GetSharedModulesByPortal(portal).Any(x => x.ModuleID == moduleId && !x.IsDeleted);
+        }
+
+        private static void ClearCache()
+        {
+            DataCache.RemoveCache(DataCache.PortalGroupsCacheKey);
+        }
+
+        private static void OnAddPortalToGroupStart(UserCopiedCallback callback, PortalInfo portal)
+        {
+            if (callback == null)
+            {
+                return;
+            }
+
+            var args = new UserCopiedEventArgs
+            {
+                TotalUsers = 0,
+                UserNo = 0,
+                UserName = string.Empty,
+                PortalName = portal.PortalName,
+                Stage = "starting",
+            };
+            callback(args);
+        }
+
+        private static void OnUserAddedToSiteGroup(UserCopiedCallback callback, PortalInfo portal, UserInfo currentUser, int totalUsers, int currentUserNumber)
+        {
+            if (callback == null)
+            {
+                return;
+            }
+
+            var args = new UserCopiedEventArgs
+            {
+                TotalUsers = totalUsers,
+                UserNo = currentUserNumber,
+                UserName = currentUser.Username,
+                PortalName = portal.PortalName,
+            };
+            callback(args);
+        }
+
+        private static void OnAddPortalToGroupFinishing(UserCopiedCallback callback, PortalInfo portal, int totalUsers)
+        {
+            if (callback == null)
+            {
+                return;
+            }
+
+            var args = new UserCopiedEventArgs
+            {
+                TotalUsers = totalUsers,
+                UserNo = totalUsers,
+                UserName = string.Empty,
+                PortalName = portal.PortalName,
+                Stage = "finalizing",
+            };
+            callback(args);
+        }
+
+        private static void OnAddPortalToGroupFinished(UserCopiedCallback callback, PortalInfo portal, PortalGroupInfo portalGroup, int totalUsers)
+        {
+            if (callback == null)
+            {
+                return;
+            }
+
+            var args = new UserCopiedEventArgs
+            {
+                TotalUsers = totalUsers,
+                UserNo = totalUsers,
+                UserName = string.Empty,
+                PortalName = portal.PortalName,
+                Stage = "finished",
+                PortalGroupId = portalGroup.PortalGroupId,
+            };
+            callback(args);
+        }
+
+        private static void LogEvent(string eventType, PortalGroupInfo portalGroup, IPortalInfo portal)
+        {
+            try
+            {
+                var log = new LogInfo
+                {
+                    BypassBuffering = true,
+                    LogTypeKey = eventType,
+                };
+                log.LogProperties.Add(new LogDetailInfo("PortalGroup:", portalGroup.PortalGroupName));
+                log.LogProperties.Add(new LogDetailInfo("PortalGroupID:", portalGroup.PortalGroupId.ToString(CultureInfo.InvariantCulture)));
+                if (portal != null)
+                {
+                    log.LogProperties.Add(new LogDetailInfo("Portal:", portal.PortalName));
+                    log.LogProperties.Add(new LogDetailInfo("PortalID:", portal.PortalId.ToString(CultureInfo.InvariantCulture)));
+                }
+
+                LogController.Instance.AddLog(log);
+            }
+            catch (Exception exc)
+            {
+                Logger.Error(exc);
+            }
+        }
+
+        private static void RemoveProfileDefinitions(IPortalInfo portal)
+        {
+            foreach (ProfilePropertyDefinition definition in ProfileController.GetPropertyDefinitionsByPortal(portal.PortalId))
+            {
+                ProfileController.DeletePropertyDefinition(definition);
+            }
+        }
+
+        private static void CopyPropertyDefinitions(int portalId, int masterPortalId)
+        {
+            foreach (ProfilePropertyDefinition definition in ProfileController.GetPropertyDefinitionsByPortal(masterPortalId))
+            {
+                var newDefinition = definition.Clone();
+                newDefinition.PortalId = portalId;
+
+                ProfileController.AddPropertyDefinition(newDefinition);
+            }
+        }
+
+        private object GetPortalGroupsCallback(CacheItemArgs cacheItemArgs)
+        {
+            return CBO.FillCollection<PortalGroupInfo>(this.dataService.GetPortalGroups());
+        }
+
+        private void DeleteSharedModules(PortalInfo portal)
+        {
+            var sharedModules = this.GetSharedModulesWithPortal(portal);
+            foreach (var sharedModule in sharedModules)
+            {
+                ModuleController.Instance.DeleteTabModule(sharedModule.TabID, sharedModule.ModuleID, false);
+            }
+
+            sharedModules = this.GetSharedModulesByPortal(portal);
+            foreach (var sharedModule in sharedModules)
+            {
+                ModuleController.Instance.DeleteTabModule(sharedModule.TabID, sharedModule.ModuleID, false);
+            }
+        }
+
+        private IEnumerable<ModuleInfo> GetSharedModulesWithPortal(PortalInfo portal)
+        {
+            return CBO.GetCachedObject<IEnumerable<ModuleInfo>>(
+                this.hostSettings,
+                new CacheItemArgs(
+                    DataCache.SharedModulesWithPortalCacheKey,
+                    DataCache.SharedModulesWithPortalCacheTimeOut,
+                    DataCache.SharedModulesWithPortalCachePriority,
+                    portal),
+                _ => CBO.FillCollection<ModuleInfo>(this.dataService.GetSharedModulesWithPortal(portal)));
+        }
+
+        private IEnumerable<ModuleInfo> GetSharedModulesByPortal(PortalInfo portal)
+        {
+            return CBO.GetCachedObject<IEnumerable<ModuleInfo>>(
+                this.hostSettings,
+                new CacheItemArgs(
+                    DataCache.SharedModulesByPortalCacheKey,
+                    DataCache.SharedModulesByPortalCacheTimeOut,
+                    DataCache.SharedModulesByPortalCachePriority,
+                    portal),
+                _ => CBO.FillCollection<ModuleInfo>(this.dataService.GetSharedModulesByPortal(portal)));
+        }
+    }
+}

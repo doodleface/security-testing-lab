@@ -1,0 +1,23 @@
+services:
+  lanraragi:
+    build:
+      context: .
+      dockerfile: tools/build/docker/Dockerfile
+    image: securitytestinglab-lanraragi:source-bebac1aa872e
+    container_name: securitytestinglab-lanraragi
+    environment:
+      LRR_NETWORK: http://*:3000
+      LRR_AUTOFIX_PERMISSIONS: "1"
+    ports:
+      - "18096:3000"
+    volumes:
+      - securitytestinglab-lanraragi-content:/home/koyomi/lanraragi/content
+      - securitytestinglab-lanraragi-thumb:/home/koyomi/lanraragi/thumb
+      - securitytestinglab-lanraragi-database:/home/koyomi/lanraragi/database
+      - securitytestinglab-lanraragi-sideloaded:/home/koyomi/lanraragi/lib/LANraragi/Plugin/Sideloaded
+    restart: unless-stopped
+volumes:
+  securitytestinglab-lanraragi-content:
+  securitytestinglab-lanraragi-thumb:
+  securitytestinglab-lanraragi-database:
+  securitytestinglab-lanraragi-sideloaded:

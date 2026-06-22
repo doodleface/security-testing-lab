@@ -1,0 +1,11 @@
+{
+  "coverage": "Saved objects, dashboard APIs, index-pattern, and proxy-style data access coverage",
+  "host": "ct-target-holdout",
+  "id": "kibana-opensearch-lab",
+  "ip": "10.190.190.95",
+  "name": "Kibana OpenSearch Dashboards Lab",
+  "platform": "linux",
+  "port": 18211,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/opensearch-project/OpenSearch-Dashboards"
+}

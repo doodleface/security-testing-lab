@@ -1,0 +1,35 @@
+services:
+  protocol-echo:
+    image: jmalloc/echo-server
+    container_name: securitytestinglab-protocol-echo
+    restart: unless-stopped
+    environment:
+      PORT: 8080
+      SEND_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN: "*"
+      SEND_HEADER_ACCESS_CONTROL_ALLOW_METHODS: "*"
+      SEND_HEADER_ACCESS_CONTROL_ALLOW_HEADERS: "*"
+    ports:
+      - "${PROTOCOL_ECHO_BIND_HOST:-0.0.0.0}:${PROTOCOL_ECHO_PORT:-8081}:8080"
+
+  grpcbin:
+    image: moul/grpcbin
+    container_name: securitytestinglab-grpcbin
+    restart: unless-stopped
+    ports:
+      - "${GRPCBIN_BIND_HOST:-0.0.0.0}:${GRPCBIN_INSECURE_PORT:-9000}:9000"
+      - "${GRPCBIN_BIND_HOST:-0.0.0.0}:${GRPCBIN_TLS_PORT:-9001}:9001"
+
+  h2-httpbin:
+    image: mccutchen/go-httpbin:latest
+    container_name: securitytestinglab-h2-httpbin
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8443
+      HTTPS_CERT_FILE: /certs/server.crt
+      HTTPS_KEY_FILE: /certs/server.key
+      LOG_LEVEL: INFO
+    volumes:
+      - ../../../config/local/runtime-targets/protocol-harness-certs:/certs:ro
+    ports:
+      - "${H2_HTTPBIN_BIND_HOST:-0.0.0.0}:${H2_HTTPBIN_PORT:-8443}:8443"

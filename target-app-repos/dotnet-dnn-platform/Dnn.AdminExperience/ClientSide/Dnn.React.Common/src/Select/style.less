@@ -1,0 +1,18 @@
+@import "../../styles/index";
+.dnn-uicommon-select {
+    resize: none;       
+    border-radius: 3px;       
+    background-color: var(--dnn-color-background, white);
+    border: 1px solid var(--dnn-color-foreground-light, @alto);
+    border-radius: var(--dnn-controls-radius, 0);
+    box-sizing: border-box;
+    padding: 8px 16px;
+    &:focus {
+        background: var(--dnn-color-background, white);
+        border: 1px solid var(--dnn-color-primary, @curiousBlue);
+    }
+    &:disabled {
+        background: var(--dnn-color-neutral-light, @mercury);
+        border: 1px solid var(--dnn-color-neutral-light, @mercury);
+    }
+}

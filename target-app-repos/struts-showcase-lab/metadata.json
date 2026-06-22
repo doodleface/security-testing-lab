@@ -1,0 +1,14 @@
+{
+  "app_id": "struts-showcase-lab",
+  "coverage": "Struts-style actions, OGNL-shaped parameters, upload, and Java MVC routing under strict lab isolation.",
+  "endpoints": [
+    "/",
+    "/struts2-showcase/index.action",
+    "/struts2-showcase/upload.action",
+    "/struts2-showcase/debug.action",
+    "/struts2-showcase/json.action"
+  ],
+  "name": "Apache Struts Showcase Lab",
+  "recommended_host": "ct-target-legacy-web-zoo",
+  "runtime_url": "http://10.190.190.96:18180/"
+}

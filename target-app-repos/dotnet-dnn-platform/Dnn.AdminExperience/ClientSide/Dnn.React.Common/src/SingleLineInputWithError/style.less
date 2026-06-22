@@ -1,0 +1,86 @@
+@import "../../styles/index";
+.dnn-single-line-input-with-error {
+    display: inline-block;
+    position: relative;
+    &.disabled {
+        .dnn-label {
+            label {
+                color: var(--dnn-color-foreground-light, @mountainMist);
+                cursor: not-allowed;
+            }
+        }
+        .input-tooltip-container {
+            .dnn-ui-common-single-line-input {
+                color: var(--dnn-color-foreground-light, @mountainMist);
+                cursor: not-allowed;
+            }
+        }
+    }
+    .dnn-label {
+        label {
+            font-weight: 700;
+            cursor: pointer;
+            float: left;
+        }
+    }
+    input {
+        color: var(--dnn-color-foreground, @bulgarianRose);
+    }
+    &.error {
+        input {
+            border-bottom: 2px solid var(--dnn-color-danger, @alizarinCrimson);
+        }
+        .input-tooltip-container {
+            .dnn-inline-counter {
+                color: var(--dnn-color-danger, @alizarinCrimson);
+                right: 26px;
+            }
+        }
+    }
+    &.warning {
+        input {
+            border-bottom: 2px solid var(--dnn-color-warning, #EA9C00);
+        }
+        .input-tooltip-container {
+            .dnn-inline-counter {
+                color: var(--dnn-color-warning, #EA9C00);
+                right: 26px;
+            }
+        }
+    }
+    .input-tooltip-container {
+        float: left;
+        position: relative;
+        width: 100%;
+        .dnn-ui-common-single-line-input{
+            width: 100%;
+            border-radius: var(--dnn-controls-radius, 0);
+        }
+        &.inline {
+            width: auto;
+        }
+        .dnn-inline-counter {
+            position: absolute;
+            color: var(--dnn-color-primary, @curiousBlue);
+            top: 9px;
+            right: 7px;
+        }
+        .dnn-ui-common-tooltip {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            .tooltip-text {
+                max-width: 255px;
+                text-align: center;
+                padding: 7px 15px;
+            }
+            &.outside {
+                right: -25px;
+            }
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+}

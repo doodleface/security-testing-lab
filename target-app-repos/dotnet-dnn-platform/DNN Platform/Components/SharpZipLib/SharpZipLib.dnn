@@ -1,0 +1,53 @@
+<dotnetnuke type="Package" version="5.0">
+  <packages>
+    <package name="DotNetNuke.SharpZipLib" type="Library" version="1.4.2">
+      <friendlyName>SharpZipLib</friendlyName>
+      <description>Library for managing zip archives.</description>
+      <dependencies/>
+      <owner>
+        <name>DNN</name>
+        <organization>.NET Foundation</organization>
+        <url>https://dnncommunity.org</url>
+        <email>info@dnncommunity.org</email>
+      </owner>
+      <license src="License.txt"/>
+      <releaseNotes>https://github.com/icsharpcode/SharpZipLib/wiki/Release-History</releaseNotes>
+      <components>
+        <component type="Assembly">
+          <assemblies>
+            <assembly>
+              <path>bin</path>
+              <name>ICSharpCode.SharpZipLib.dll</name>
+              <version>1.4.2</version>
+            </assembly>
+            <assembly>
+              <path>bin</path>
+              <name>System.Buffers.dll</name>
+              <version>4.5.1</version>
+            </assembly>
+            <assembly>
+              <path>bin</path>
+              <name>System.Memory.dll</name>
+              <version>4.5.5</version>
+            </assembly>
+            <assembly>
+              <path>bin</path>
+              <name>System.Numerics.Vectors.dll</name>
+              <version>4.5.0</version>
+            </assembly>
+            <assembly>
+              <path>bin</path>
+              <name>System.Runtime.CompilerServices.Unsafe.dll</name>
+              <version>6.0.0</version>
+            </assembly>
+            <assembly>
+              <path>bin</path>
+              <name>System.Threading.Tasks.Extensions.dll</name>
+              <version>4.5.4</version>
+            </assembly>
+          </assemblies>
+        </component>
+      </components>
+    </package>
+  </packages>
+</dotnetnuke>

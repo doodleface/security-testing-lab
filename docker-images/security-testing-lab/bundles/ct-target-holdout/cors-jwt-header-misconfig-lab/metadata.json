@@ -1,0 +1,14 @@
+{
+  "app_id": "cors-jwt-header-misconfig-lab",
+  "coverage": "Deterministic CORS, JWT, CSP, HSTS, security-header, and auth-boundary misconfiguration variants.",
+  "endpoints": [
+    "/",
+    "/cors/open",
+    "/jwt/none",
+    "/headers/missing",
+    "/auth/boundary"
+  ],
+  "name": "CORS JWT Header Misconfiguration Lab",
+  "recommended_host": "ct-target-holdout",
+  "runtime_url": "http://10.190.190.95:18184/"
+}

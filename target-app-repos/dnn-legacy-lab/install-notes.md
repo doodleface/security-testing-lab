@@ -1,0 +1,1 @@
+Install with lab-setup/LabSetup.sh --windows-iis against a supplied Windows Server/IIS SSH target. The installer checks Windows, IIS, .NET, URL Rewrite, Web Management tools, and database prerequisites where safely possible.

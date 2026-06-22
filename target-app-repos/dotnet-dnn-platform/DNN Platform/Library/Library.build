@@ -1,0 +1,11 @@
+﻿<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <RootDirectory>$(MSBuildProjectDirectory)\..\..</RootDirectory>
+  </PropertyGroup>
+  <Import Project="..\..\DNN_Platform.build" />
+  <Target Name="CopyBin" BeforeTargets="Build">
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\bin\DotNetNuke.dll" DestinationFolder="$(WebsitePath)\bin" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\bin\DotNetNuke.pdb" DestinationFolder="$(WebsitePath)\bin" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\bin\DotNetNuke.xml" DestinationFolder="$(WebsitePath)\bin" />
+  </Target>
+</Project>

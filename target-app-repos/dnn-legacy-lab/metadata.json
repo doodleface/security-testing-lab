@@ -1,0 +1,11 @@
+{
+  "coverage": ".NET CMS/WebForms/plugin-style coverage",
+  "host": "windows-iis-target",
+  "id": "dnn-legacy-lab",
+  "ip": "<windows-host>",
+  "name": "DotNetNuke DNN Legacy Lab",
+  "platform": "windows-iis",
+  "port": 18201,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/dnnsoftware/Dnn.Platform"
+}

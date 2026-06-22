@@ -1,0 +1,11 @@
+:host{
+    display: flex;
+    flex-direction: column;
+}
+:host(*){
+    background-color: transparent;
+    border: none;
+    padding: 0.5em 1em;
+    margin: 0;
+    white-space: nowrap;
+}

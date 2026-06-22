@@ -1,0 +1,14 @@
+{
+  "app_id": "portswigger-websec-subset",
+  "coverage": "Self-hosted WebGoat-like subset for request smuggling indicators, access control, cache poisoning, and parameter pollution surfaces.",
+  "endpoints": [
+    "/",
+    "/lab/access-control",
+    "/lab/parameter-pollution",
+    "/lab/cache-poisoning",
+    "/lab/request-routing"
+  ],
+  "name": "PortSwigger-style Web Security Academy Subset",
+  "recommended_host": "ct-target-dvwa",
+  "runtime_url": "http://10.190.190.91:18171/"
+}

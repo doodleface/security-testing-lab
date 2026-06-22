@@ -1,0 +1,9 @@
+hostname	ip	vcpus	memory_mib	disk_total_gib	disk_free_gib	notes
+ct-target-dvwa	10.190.190.91	4	5925	29	13	Collected from LabSetupHost via SSH without printing or storing credentials
+ct-target-appsuite	10.190.190.92	4	5925	29	19	Collected from LabSetupHost via SSH without printing or storing credentials
+ct-target-graphql	10.190.190.93	4	5925	29	19	Collected from LabSetupHost via SSH without printing or storing credentials
+ct-target-protocol-lab	10.190.190.94	4	5925	29	20	Collected from LabSetupHost via SSH without printing or storing credentials
+ct-target-holdout	10.190.190.95	4	7941	48	21	Collected from LabSetupHost via SSH without printing or storing credentials
+ct-target-legacy-web-zoo	10.190.190.96	4	7941	48	14	Collected from LabSetupHost via SSH without printing or storing credentials
+ct-target-node-zoo	10.190.190.97	4	7941	48	34	Collected from LabSetupHost via SSH without printing or storing credentials
+ct-vulnlab-01	10.190.190.99	4	7941	39	27	Collected from LabSetupHost via SSH without printing or storing credentials

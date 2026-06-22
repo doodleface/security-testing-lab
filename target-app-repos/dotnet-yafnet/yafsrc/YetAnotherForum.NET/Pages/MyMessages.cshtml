@@ -1,0 +1,95 @@
+@page "{handler?}"
+
+@using YAF.Core.Context
+@using YAF.Core.Model
+@using YAF.Types.Constants
+@using YAF.Types.Extensions
+@using YAF.Types.Interfaces
+@using YAF.Types.Interfaces.Services
+@using YAF.Types.Models
+@using YAF.Web.HtmlHelpers
+@model MyMessagesModel
+
+<div class="row">
+    <div class="col col-sm-2">
+        <profileMenu></profileMenu>
+        
+        <div class="card mt-2 mb-2">
+
+            <div class="card-header">
+                @Html.LocalizedText("CONVERSATION_TITLE")
+            </div>
+
+            <input id="UserId" type="hidden" value="@BoardContext.Current.PageUserID" />
+            <input id="Avatar" type="hidden" value="@BoardContext.Current.PageUserID" />
+
+            <div class="card-body">
+                
+                @if (!Model.Users.NullOrEmpty())
+                {
+                    var activeUsers = Model.Get<IDataCache>().GetOrSet(
+                        Constants.Cache.UsersOnlineStatus,
+                        () => Model.GetRepository<Active>().List(
+                            Model.PageBoardContext.BoardSettings.ShowCrawlersInActiveList,
+                            Model.PageBoardContext.BoardSettings.ActiveListTime),
+                        TimeSpan.FromMilliseconds(BoardContext.Current.BoardSettings.OnlineStatusCacheTimeout));
+
+                    <ul class="list-group list-group-flush chat-list mb-0">
+
+                        @foreach (var user in Model.Users)
+                        {
+                            <li id="@(user.ID)" class="@(user.Selected ? "chat-list-user list-group-item list-group-item-action active" : "chat-list-user list-group-item list-group-item-action")">
+                                <img class="img-thumbnail rounded float-start mt-1" loading="lazy" src="@(Model.Get<IAvatars>().GetAvatarUrlForUser(user))" alt="User Image">
+                                <div class="float-start ps-2">
+                                    <span class="name">@Html.UserLabel(user)</span>
+                                    <div>
+                                        @if (Model.PageBoardContext.BoardSettings.ShowUserOnlineStatus)
+                                        {
+                                            if (activeUsers.Exists(x => x.UserID == user.ID && !x.IsActiveExcluded))
+                                            {
+                                                <i class="fa fa-circle text-success pe-2"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-circle text-danger pe-2"></i>
+                                            }
+                                        }
+                                        
+                                        <small>
+                                            @Html.DisplayDateTime(DateTimeFormat.Both, user.LastVisit)
+                                        </small>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+
+                    </ul>
+                }
+                
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-xl-10">
+        <div class="row">
+            <div class="col">
+	            <div id="PriChatDiv" data-placeholder="@Model.GetText("PM", "PLACEHOLDER")">
+		            <div class="card">
+			            <div class="card-body text-center">
+                            <div class="spinner-border spinner-border" role="status" aria-hidden="true" style="width: 3rem; height: 3rem;">
+					            <span class="visually-hidden">@Html.LocalizedText("COMMON", "LOADING")</span>
+				            </div>
+			            </div>
+		            </div>
+		            
+	            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+	<script src="~/js/messages.min.js" asp-append-version="true" defer></script>
+   
+}

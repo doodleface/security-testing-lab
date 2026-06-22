@@ -1,0 +1,23 @@
+services:
+  ws-sse-lab:
+    build:
+      context: ./ws_sse_lab
+    image: securitytestinglab/ws-sse-lab:local
+    restart: unless-stopped
+    ports:
+      - "${WS_SSE_LAB_PORT:-8082}:8082"
+  grpc-lab:
+    build:
+      context: ./grpc_lab
+    image: securitytestinglab/grpc-lab:local
+    restart: unless-stopped
+    ports:
+      - "${GRPC_LAB_PORT:-50051}:50051"
+      - "${GRPC_LAB_TLS_PORT:-50052}:50052"
+  h2-lab:
+    build:
+      context: ./h2_lab
+    image: securitytestinglab/h2-lab:local
+    restart: unless-stopped
+    ports:
+      - "${H2_LAB_PORT:-9443}:9443"

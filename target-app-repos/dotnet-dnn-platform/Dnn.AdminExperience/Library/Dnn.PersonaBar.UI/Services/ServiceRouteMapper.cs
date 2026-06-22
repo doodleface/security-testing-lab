@@ -1,0 +1,60 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information
+
+namespace Dnn.PersonaBar.UI.Services
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
+
+    using Dnn.PersonaBar.Library;
+    using Dnn.PersonaBar.Library.Attributes;
+    using DotNetNuke.Framework.Reflections;
+    using DotNetNuke.Web.Api;
+
+    /// <summary>The <see cref="IServiceRouteMapper"/> for the Persona Bar API.</summary>
+    public class ServiceRouteMapper : IServiceRouteMapper
+    {
+        /// <inheritdoc />
+        [SuppressMessage("Microsoft.Naming", "CA1725:ParameterNamesShouldMatchBaseDeclaration", Justification = "Breaking change")]
+        public void RegisterRoutes(IMapRoute routeManager)
+        {
+            // get all persona bar services from persona bar modules.
+            var services = FindPersonaBarServices();
+
+            if (services.Count > 0)
+            {
+                routeManager.MapHttpRoute("PersonaBar", "default", "{controller}/{action}", services.ToArray());
+            }
+        }
+
+        private static IEnumerable<Type> GetAllApiControllers()
+        {
+            var typeLocator = new TypeLocator();
+            return typeLocator.GetAllMatchingTypes(
+                t => t is { IsClass: true, IsAbstract: false, IsVisible: true, } &&
+                     typeof(PersonaBarApiController).IsAssignableFrom(t));
+        }
+
+        private static List<string> FindPersonaBarServices()
+        {
+            var controllerTypes = GetAllApiControllers();
+            var namespaces = new List<string>();
+            foreach (var type in controllerTypes)
+            {
+                var scopeAttr = (MenuPermissionAttribute)type.GetCustomAttributes(false).Cast<Attribute>().FirstOrDefault(a => a is MenuPermissionAttribute);
+                if (scopeAttr != null)
+                {
+                    if (!namespaces.Contains(type.Namespace))
+                    {
+                        namespaces.Add(type.Namespace);
+                    }
+                }
+            }
+
+            return namespaces;
+        }
+    }
+}

@@ -1,0 +1,21 @@
+# Peruggia
+
+Runtime URL: http://10.190.190.91:18152/
+Runtime host: ct-target-dvwa
+Source reference: target-app-repos/deployed-ct-target-dvwa/securitytestinglab-targets/dvwa-additional/peruggia
+Docker asset: docker-images/security-testing-lab/bundles/ct-target-dvwa-additional/additional-dvwa-original-targets.yml
+Compose reference: bundles/ct-target-dvwa-additional/additional-dvwa-original-targets.yml
+Compose service: peruggia
+Default port: 18152
+Internal port: 80
+Credential ref: none
+Status: containerized
+
+Notes: Built from copied deployed source overlay.
+
+Build or pull from the lab asset root:
+
+```bash
+cd docker-images/security-testing-lab
+./build-one.sh peruggia
+```

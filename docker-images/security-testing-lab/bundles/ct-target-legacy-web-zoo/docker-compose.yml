@@ -1,0 +1,40 @@
+services:
+  database:
+    image: webpwnized/mutillidae:database-2.12.5
+    container_name: securitytestinglab-mutillidae-database
+    restart: unless-stopped
+
+  mutillidae:
+    image: webpwnized/mutillidae:www-2.12.5
+    container_name: securitytestinglab-mutillidae
+    restart: unless-stopped
+    depends_on:
+      - database
+    ports:
+      - "0.0.0.0:8085:80"
+
+  railsgoat:
+    image: owasp/railsgoat:main
+    container_name: securitytestinglab-railsgoat
+    restart: unless-stopped
+    command: ["/bin/bash", "-lc", "rm -f tmp/pids/server.pid && bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0"]
+    ports:
+      - "0.0.0.0:3001:3000"
+
+  benchmarkjava:
+    image: owasp/benchmark:latest
+    container_name: securitytestinglab-benchmarkjava
+    restart: unless-stopped
+    command: ["/bin/bash", "-lc", "cd /owasp/BenchmarkJava && ./runRemoteAccessibleBenchmark.sh"]
+    ports:
+      - "0.0.0.0:8443:8443"
+
+  spring-petclinic:
+    build:
+      context: ./spring-petclinic
+      dockerfile: Dockerfile.securitytestinglab
+    image: securitytestinglab/spring-petclinic-target:local
+    container_name: securitytestinglab-spring-petclinic
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:8086:8080"

@@ -1,0 +1,15 @@
+services:
+  hydra:
+    image: oryd/hydra:v2.3.0
+    command: serve all --dev
+    ports:
+      - "4444:4444"
+      - "4445:4445"
+  mock-saml-idp:
+    image: ghcr.io/boxyhq/mock-saml:latest
+    ports:
+      - "4000:4000"
+  oauth-target:
+    image: nginx:1.27-alpine
+    ports:
+      - "8088:80"

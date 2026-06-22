@@ -1,0 +1,11 @@
+{
+  "coverage": "Wiki templates, page history, extension routes, and permission-boundary coverage",
+  "host": "ct-target-legacy-web-zoo",
+  "id": "mediawiki-extension-lab",
+  "ip": "10.190.190.96",
+  "name": "MediaWiki Extension Lab",
+  "platform": "linux",
+  "port": 18205,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/wikimedia/mediawiki"
+}

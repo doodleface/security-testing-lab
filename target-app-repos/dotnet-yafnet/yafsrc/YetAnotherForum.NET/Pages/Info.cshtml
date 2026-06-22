@@ -1,0 +1,30 @@
+﻿@page "{info:int}/{message?}"
+@using YAF.Types.Extensions
+@using YAF.Types.Constants
+@model InfoModel
+
+@{
+    Model.PageBoardContext.CurrentForumPage.PageTitle = Model.Title;
+}
+
+<div class="card text-white bg-secondary mb-3 text-center mx-auto w-50">
+    <div class="card-body">
+        <h5 class="card-title">
+            @Model.Title
+        </h5>
+        <p class="card-text">
+            @if (Model.PageBoardContext.IsSuspended)
+            {
+                @Html.Raw(Model.InfoLabel)
+            }
+            else
+            {
+                @Model.InfoLabel
+            }
+	        
+        </p>
+        <a asp-page="@ForumPages.Index.GetPageName()" button-style="Danger"
+           text-localized-page="INFO" text-localized-tag="CONTINUE">
+        </a>
+    </div>
+</div>

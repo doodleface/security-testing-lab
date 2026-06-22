@@ -1,0 +1,12 @@
+services:
+  securitytestinglab-ssti-matrix-lab:
+    build:
+      context: ./ssti-matrix-lab
+    image: securitytestinglab/ssti-matrix-lab:local
+    container_name: securitytestinglab-ssti-matrix-lab
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:18214:8080"
+    labels:
+      securitytestinglab.app_id: "ssti-matrix-lab"
+      securitytestinglab.coverage: "Jinja2, Twig, Freemarker, and Velocity template-engine comparison coverage"

@@ -1,0 +1,75 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - "Type: Build/Release"
+      - "Type: Maintenance"
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "javascript"
+      - "Type: Maintenance"
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: "dotnet-sdk"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+    labels:
+      - ".NET"
+      - "Type: Maintenance"
+    cooldown:
+      default-days: 7
+
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    labels:
+      - ".NET"
+      - "Type: Maintenance"
+    groups:
+      MailKit:
+        patterns:
+          - "MailKit"
+          - "MimeKit"
+          - "BouncyCastle.Cryptography"
+      Google-Apis:
+        patterns:
+          - "Google.Apis*"
+      AspNet:
+        patterns:
+          - "Microsoft.AspNet.*"
+      SourceLink:
+        patterns:
+          - "Microsoft.SourceLink.*"
+          - "Microsoft.Build.Tasks.Git"
+      TestStack-Dossier:
+        patterns:
+          - "TestStack.Dossier"
+          - "AutoFixture"
+          - "Fare"
+          - "NSubstitute"
+          - "Castle.Core"
+      Cake-Issues:
+        patterns:
+          - "Cake.Issues*"
+          - "Cake.Frosting.Issues*"
+      DependencyInjection:
+        patterns:
+          - "Microsoft.Extensions.DependencyInjection*"
+      CodeAnalysis:
+        patterns:
+          - "Microsoft.CodeAnalysis.*"
+    cooldown:
+      default-days: 7

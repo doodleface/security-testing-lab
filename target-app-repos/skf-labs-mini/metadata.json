@@ -1,0 +1,15 @@
+{
+  "app_id": "skf-labs-mini",
+  "coverage": "SKF-style focused labs for SSRF, IDOR, XXE, JWT, path traversal, and deserialization route shapes.",
+  "endpoints": [
+    "/",
+    "/labs/ssrf",
+    "/labs/idor/1001",
+    "/labs/xxe",
+    "/labs/path-traversal",
+    "/labs/deserialization"
+  ],
+  "name": "OWASP SKF Labs Mini",
+  "recommended_host": "ct-target-dvwa",
+  "runtime_url": "http://10.190.190.91:18170/"
+}

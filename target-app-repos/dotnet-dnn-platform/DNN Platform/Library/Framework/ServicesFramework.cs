@@ -1,0 +1,51 @@
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information
+
+namespace DotNetNuke.Framework
+{
+    using System;
+
+    using DotNetNuke.Abstractions.Portals;
+    using DotNetNuke.Common;
+    using DotNetNuke.Entities.Portals;
+
+    using Microsoft.Extensions.DependencyInjection;
+
+    /// <summary>Enables modules to support Services Framework features.</summary>
+    public class ServicesFramework : ServiceLocator<IServicesFramework, ServicesFramework>
+    {
+        public static string GetServiceFrameworkRoot()
+        {
+            var portalSettings = PortalSettings.Current;
+            if (portalSettings == null)
+            {
+                return string.Empty;
+            }
+
+            IPortalAliasInfo alias = portalSettings.PortalAlias;
+            var path = alias.HttpAlias;
+            var index = path.IndexOf('/');
+            if (index > 0)
+            {
+                path = path.Substring(index);
+                if (!path.EndsWith("/", StringComparison.Ordinal))
+                {
+                    path += "/";
+                }
+            }
+            else
+            {
+                path = "/";
+            }
+
+            return path;
+        }
+
+        /// <inheritdoc />
+        protected override Func<IServicesFramework> GetFactory()
+        {
+            return static () => ActivatorUtilities.GetServiceOrCreateInstance<ServicesFrameworkImpl>(Globals.DependencyProvider);
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+  "coverage": "Dashboard, data-source proxy, saved query, and plugin-style route coverage",
+  "host": "ct-target-holdout",
+  "id": "grafana-dashboard-lab",
+  "ip": "10.190.190.95",
+  "name": "Grafana Dashboard Lab",
+  "platform": "linux",
+  "port": 18210,
+  "source_type": "generated source-backed SecurityTestingLab lab with public upstream fallback reference",
+  "upstream": "https://github.com/grafana/grafana"
+}

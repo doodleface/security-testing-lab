@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
+	  <NuspecFile>YAFNET.Data.PostgreSQL.nuspec</NuspecFile>
+	  <RootNamespace>YAF.Data.PostgreSQL</RootNamespace>
+	  <AssemblyName>YAF.Data.PostgreSQL</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent />
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.8" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.26.0.140279">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.8" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ServiceStack\ServiceStack.OrmLite.PostgreSQL\ServiceStack.OrmLite.PostgreSQL.Core.csproj" />
+    <ProjectReference Include="..\..\ServiceStack\ServiceStack.OrmLite\ServiceStack.OrmLite.Core.csproj" />
+    <ProjectReference Include="..\..\YAFNET.Configuration\YAFNET.Configuration.csproj" />
+    <ProjectReference Include="..\..\YAFNET.Core\YAFNET.Core.csproj" />
+    <ProjectReference Include="..\..\YAFNET.Types\YAFNET.Types.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="9.1.0" />
+    <PackageReference Include="Npgsql" Version="10.0.3" />
+  </ItemGroup>
+</Project>
