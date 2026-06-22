@@ -1,17 +1,20 @@
 services:
   juice-shop:
-    image: bkimminich/juice-shop
+    image: securitytestinglab/snapshot-bkimminich-juice-shop-latest:20260622
     container_name: securitytestinglab-juice-shop
     restart: unless-stopped
     ports:
-      - "${JUICE_SHOP_BIND_HOST:-0.0.0.0}:${JUICE_SHOP_PORT:-3000}:3000"
-
+    - ${JUICE_SHOP_BIND_HOST:-0.0.0.0}:${JUICE_SHOP_PORT:-3000}:3000
+    build:
+      context: ./external-images/snapshot-bkimminich-juice-shop-latest
   vampi:
-    image: erev0s/vampi:latest
+    image: securitytestinglab/snapshot-erev0s-vampi-latest:20260622
     container_name: securitytestinglab-vampi
     restart: unless-stopped
     environment:
-      vulnerable: "${VAMPI_VULNERABLE:-1}"
-      tokentimetolive: "${VAMPI_TOKEN_TTL:-3600}"
+      vulnerable: ${VAMPI_VULNERABLE:-1}
+      tokentimetolive: ${VAMPI_TOKEN_TTL:-3600}
     ports:
-      - "${VAMPI_BIND_HOST:-0.0.0.0}:${VAMPI_PORT:-5000}:5000"
+    - ${VAMPI_BIND_HOST:-0.0.0.0}:${VAMPI_PORT:-5000}:5000
+    build:
+      context: ./external-images/snapshot-erev0s-vampi-latest

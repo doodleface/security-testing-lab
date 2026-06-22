@@ -187,7 +187,7 @@ services:
     ports:
       - \"0.0.0.0:$port:$internal\"
 YAML
-cd '$REMOTE_DIR' && if docker compose version >/dev/null 2>&1; then docker compose -f '$compose' -f '$override' up -d --build '$service'; else docker-compose -f '$compose' -f '$override' up -d --build '$service'; fi"
+cd '$REMOTE_DIR' && if docker compose version >/dev/null 2>&1; then docker compose -f '$compose' build && docker compose -f '$compose' -f '$override' up -d --build '$service'; else docker-compose -f '$compose' build && docker-compose -f '$compose' -f '$override' up -d --build '$service'; fi"
     done
   done
   printf "\nDeployment requests complete. Review docker compose output on each destination server.\n"

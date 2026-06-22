@@ -8,6 +8,8 @@ This repository contains lab deployment assets for intentionally vulnerable web 
 - `lab-setup/lab-apps.tsv`: application inventory used by the setup script.
 - `lab-setup/windows-iis-apps.tsv`: Windows/IIS application inventory used by the setup script.
 - `docker-images/security-testing-lab/`: Docker Compose bundles and build contexts.
+- `docker-images/security-testing-lab/external-image-snapshots.tsv`: upstream image snapshot manifest with resolved digests and source references.
+- `docker-images/security-testing-lab/bundles/external-images/`: Dockerfile wrappers that rebuild local snapshot images from pinned upstream digests.
 - `target-app-repos/`: source caches and copied target application sources used by the lab manifests.
 
 ## Usage
@@ -26,6 +28,18 @@ bash lab-setup/LabSetup.sh --windows-iis
 
 The script prompts for destination servers and can use SSH keys or password-based SSH when `sshpass` is available. Do not store plaintext credentials in this repository.
 
+## Local Image Snapshots
+
+Compose files in `docker-images/security-testing-lab/bundles/` use the local `securitytestinglab/` image namespace. Services that previously referenced upstream images now have Dockerfile wrappers under `docker-images/security-testing-lab/bundles/external-images/` and pinned upstream digests recorded in `docker-images/security-testing-lab/external-image-snapshots.tsv`.
+
+`LabSetup.sh` syncs these assets to the destination host and runs `docker compose build` for the selected Compose file before starting the selected service. This builds local snapshot images from the pinned upstream digest wrappers instead of relying on direct upstream image names in Compose.
+
+To pre-build every upstream snapshot image from the repository root:
+
+```bash
+docker-images/security-testing-lab/materialize-external-images.sh
+```
+
 ## Safety
 
 These applications are intentionally vulnerable. Deploy them only on authorized lab networks. Review exposed ports, firewall rules, and credentials before starting any target.
@@ -36,7 +50,7 @@ The lab setup manifest currently tracks these targets. Local image names use the
 
 | # | Target | Image / Version | Upstream / Source |
 | ---: | --- | --- | --- |
-| 1 | DVWA | `version not specified` | [https://github.com/digininja/DVWA](https://github.com/digininja/DVWA) |
+| 1 | DVWA | `securitytestinglab/dvwa-target:local` | [https://github.com/digininja/DVWA](https://github.com/digininja/DVWA) |
 | 2 | SQLi-Labs | `securitytestinglab/sqli-labs-target:local` | [https://github.com/Audi-1/sqli-labs](https://github.com/Audi-1/sqli-labs) |
 | 3 | OWASP Bricks | `securitytestinglab/owasp-bricks-target:local` | [https://sourceforge.net/projects/owaspbricks/](https://sourceforge.net/projects/owaspbricks/) |
 | 4 | Peruggia | `securitytestinglab/peruggia-target:local` | [https://github.com/jay/peruggia](https://github.com/jay/peruggia) |
@@ -47,54 +61,54 @@ The lab setup manifest currently tracks these targets. Local image names use the
 | 9 | BodgeIt Store | `securitytestinglab/bodgeit-target:local` | [https://github.com/psiinon/bodgeit](https://github.com/psiinon/bodgeit) |
 | 10 | AltoroJ | `securitytestinglab/altoroj-target:local` | [https://github.com/HCL-TECH-SOFTWARE/AltoroJ](https://github.com/HCL-TECH-SOFTWARE/AltoroJ) |
 | 11 | Vulnado | `securitytestinglab/vulnado-target:local` | [https://github.com/ScaleSec/vulnado](https://github.com/ScaleSec/vulnado) |
-| 12 | OWASP Juice Shop | `version not specified` | [https://github.com/juice-shop/juice-shop](https://github.com/juice-shop/juice-shop) |
-| 13 | VAmPI | `erev0s/vampi:latest` | [https://github.com/erev0s/VAmPI](https://github.com/erev0s/VAmPI) |
-| 14 | DVGA | `version not specified` | [https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) |
+| 12 | OWASP Juice Shop | `securitytestinglab/snapshot-bkimminich-juice-shop-latest:20260622` | [https://github.com/juice-shop/juice-shop](https://github.com/juice-shop/juice-shop) |
+| 13 | VAmPI | `securitytestinglab/snapshot-erev0s-vampi-latest:20260622` | [https://github.com/erev0s/VAmPI](https://github.com/erev0s/VAmPI) |
+| 14 | DVGA | `securitytestinglab/snapshot-dolevf-dvga-latest:20260622` | [https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) |
 | 15 | WebSocket SSE HTTP lab | `securitytestinglab/ws-sse-lab:local` | local lab fixture source |
 | 16 | HTTPS HTTP2 lab | `securitytestinglab/h2-lab:local` | local lab fixture source |
-| 17 | crAPI | `crapi/crapi-web:${VERSION:-latest}` | [https://github.com/OWASP/crAPI](https://github.com/OWASP/crAPI) |
-| 18 | crAPI MailHog | `crapi/mailhog:${VERSION:-latest}` | [https://github.com/mailhog/MailHog](https://github.com/mailhog/MailHog) |
-| 19 | DVGA holdout | `dolevf/dvga:latest` | [https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) |
-| 20 | WebGoat | `webgoat/webgoat:latest` | [https://github.com/WebGoat/WebGoat](https://github.com/WebGoat/WebGoat) |
-| 21 | WebWolf | `webgoat/webgoat:latest` | [https://github.com/WebGoat/WebGoat](https://github.com/WebGoat/WebGoat) |
-| 22 | DVWS | `tssoffsec/dvws:latest` | [https://github.com/snoopysecurity/dvws-node](https://github.com/snoopysecurity/dvws-node) |
-| 23 | DVWS auxiliary HTTP | `tssoffsec/dvws:latest` | [https://github.com/snoopysecurity/dvws-node](https://github.com/snoopysecurity/dvws-node) |
-| 24 | bWAPP | `raesene/bwapp:latest` | [https://sourceforge.net/projects/bwapp/](https://sourceforge.net/projects/bwapp/) |
+| 17 | crAPI | `securitytestinglab/snapshot-crapi-crapi-web-latest:20260622` | [https://github.com/OWASP/crAPI](https://github.com/OWASP/crAPI) |
+| 18 | crAPI MailHog | `securitytestinglab/snapshot-crapi-mailhog-latest:20260622` | [https://github.com/mailhog/MailHog](https://github.com/mailhog/MailHog) |
+| 19 | DVGA holdout | `securitytestinglab/snapshot-dolevf-dvga-latest:20260622` | [https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application](https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application) |
+| 20 | WebGoat | `securitytestinglab/snapshot-webgoat-webgoat-latest:20260622` | [https://github.com/WebGoat/WebGoat](https://github.com/WebGoat/WebGoat) |
+| 21 | WebWolf | `securitytestinglab/snapshot-webgoat-webgoat-latest:20260622` | [https://github.com/WebGoat/WebGoat](https://github.com/WebGoat/WebGoat) |
+| 22 | DVWS | `securitytestinglab/snapshot-tssoffsec-dvws-latest:20260622` | [https://github.com/snoopysecurity/dvws-node](https://github.com/snoopysecurity/dvws-node) |
+| 23 | DVWS auxiliary HTTP | `securitytestinglab/snapshot-tssoffsec-dvws-latest:20260622` | [https://github.com/snoopysecurity/dvws-node](https://github.com/snoopysecurity/dvws-node) |
+| 24 | bWAPP | `securitytestinglab/snapshot-raesene-bwapp-latest:20260622` | [https://sourceforge.net/projects/bwapp/](https://sourceforge.net/projects/bwapp/) |
 | 25 | vAPI | `securitytestinglab/vapi-target:local` | [https://github.com/roottusk/vapi](https://github.com/roottusk/vapi) |
-| 26 | OpenEMR | `openemr/openemr:5.0.2` | [https://github.com/openemr/openemr](https://github.com/openemr/openemr) |
-| 27 | Magento | `alexcheng/magento2:2.2.3` | [https://github.com/magento/magento2](https://github.com/magento/magento2) |
-| 28 | Drupal | `drupal:8.9.20-php7.4-apache` | [https://github.com/drupal/drupal](https://github.com/drupal/drupal) |
+| 26 | OpenEMR | `securitytestinglab/snapshot-openemr-openemr-5-0-2:20260622` | [https://github.com/openemr/openemr](https://github.com/openemr/openemr) |
+| 27 | Magento | `securitytestinglab/snapshot-alexcheng-magento2-2-2-3:20260622` | [https://github.com/magento/magento2](https://github.com/magento/magento2) |
+| 28 | Drupal | `securitytestinglab/snapshot-drupal-8-9-20-php7-4-apache:20260622` | [https://github.com/drupal/drupal](https://github.com/drupal/drupal) |
 | 29 | Auth-boundary REST lab | `securitytestinglab/auth-boundary-lab:local` | local lab fixture source |
 | 30 | Auth-boundary GraphQL lab | `securitytestinglab/auth-boundary-lab:local` | local lab fixture source |
-| 31 | Mutillidae II | `webpwnized/mutillidae:www-2.12.5` | [https://github.com/webpwnized/mutillidae](https://github.com/webpwnized/mutillidae) |
-| 32 | RailsGoat | `owasp/railsgoat:main` | [https://github.com/OWASP/railsgoat](https://github.com/OWASP/railsgoat) |
-| 33 | OWASP BenchmarkJava | `owasp/benchmark:latest` | [https://github.com/OWASP-Benchmark/BenchmarkJava](https://github.com/OWASP-Benchmark/BenchmarkJava) |
-| 34 | source-matched BenchmarkJava | `owasp/benchmark:latest` | [https://github.com/OWASP-Benchmark/BenchmarkJava](https://github.com/OWASP-Benchmark/BenchmarkJava) |
+| 31 | Mutillidae II | `securitytestinglab/snapshot-webpwnized-mutillidae-www-2-12-5:20260622` | [https://github.com/webpwnized/mutillidae](https://github.com/webpwnized/mutillidae) |
+| 32 | RailsGoat | `securitytestinglab/snapshot-owasp-railsgoat-main:20260622` | [https://github.com/OWASP/railsgoat](https://github.com/OWASP/railsgoat) |
+| 33 | OWASP BenchmarkJava | `securitytestinglab/snapshot-owasp-benchmark-latest:20260622` | [https://github.com/OWASP-Benchmark/BenchmarkJava](https://github.com/OWASP-Benchmark/BenchmarkJava) |
+| 34 | source-matched BenchmarkJava | `securitytestinglab/snapshot-owasp-benchmark-latest:20260622` | [https://github.com/OWASP-Benchmark/BenchmarkJava](https://github.com/OWASP-Benchmark/BenchmarkJava) |
 | 35 | Spring Petclinic | `securitytestinglab/spring-petclinic-target:local` | [https://github.com/spring-projects/spring-petclinic](https://github.com/spring-projects/spring-petclinic) |
 | 36 | Bugzilla | `version not specified` | [https://github.com/bugzilla/bugzilla](https://github.com/bugzilla/bugzilla) |
 | 37 | LANraragi | `version not specified` | [https://github.com/Difegue/LANraragi](https://github.com/Difegue/LANraragi) |
-| 38 | WrongSecrets | `jeroenwillemsen/wrongsecrets:latest-no-vault` | [https://github.com/OWASP/wrongsecrets](https://github.com/OWASP/wrongsecrets) |
-| 39 | WrongSecrets MCP aux | `jeroenwillemsen/wrongsecrets:latest-no-vault` | [https://github.com/OWASP/wrongsecrets](https://github.com/OWASP/wrongsecrets) |
+| 38 | WrongSecrets | `securitytestinglab/snapshot-jeroenwillemsen-wrongsecrets-latest-no-vault:20260622` | [https://github.com/OWASP/wrongsecrets](https://github.com/OWASP/wrongsecrets) |
+| 39 | WrongSecrets MCP aux | `securitytestinglab/snapshot-jeroenwillemsen-wrongsecrets-latest-no-vault:20260622` | [https://github.com/OWASP/wrongsecrets](https://github.com/OWASP/wrongsecrets) |
 | 40 | Security Shepherd | `securitytestinglab/security-shepherd:local` | [https://github.com/OWASP/SecurityShepherd](https://github.com/OWASP/SecurityShepherd) |
 | 41 | DVWP WordPress | `securitytestinglab/dvwp-wordpress:local` | [https://github.com/vavkamil/dvwp](https://github.com/vavkamil/dvwp) |
-| 42 | DVWP phpMyAdmin | `phpmyadmin/phpmyadmin:latest` | [https://github.com/phpmyadmin/phpmyadmin](https://github.com/phpmyadmin/phpmyadmin) |
-| 43 | old phpMyAdmin | `phpMyAdmin 4.8, MySQL 5.7 backend` | [https://github.com/phpmyadmin/phpmyadmin](https://github.com/phpmyadmin/phpmyadmin) |
-| 44 | Joomla | `joomla:3.9.0-php7.2-apache` | [https://github.com/joomla/joomla-cms](https://github.com/joomla/joomla-cms) |
+| 42 | DVWP phpMyAdmin | `securitytestinglab/snapshot-phpmyadmin-phpmyadmin-latest:20260622` | [https://github.com/phpmyadmin/phpmyadmin](https://github.com/phpmyadmin/phpmyadmin) |
+| 43 | old phpMyAdmin | `securitytestinglab/snapshot-phpmyadmin-phpmyadmin-4-8:20260622` | [https://github.com/phpmyadmin/phpmyadmin](https://github.com/phpmyadmin/phpmyadmin) |
+| 44 | Joomla | `securitytestinglab/snapshot-joomla-3-9-0-php7-2-apache:20260622` | [https://github.com/joomla/joomla-cms](https://github.com/joomla/joomla-cms) |
 | 45 | vulnerable WordPress plugin lab | `securitytestinglab/vulnerable-wordpress-plugin-lab:local` | local deployed vulnerable WordPress plugin lab source |
 | 46 | NodeGoat | `securitytestinglab/nodegoat-target:local` | [https://github.com/OWASP/NodeGoat](https://github.com/OWASP/NodeGoat) |
-| 47 | DVNA | `appsecco/dvna:sqlite` | [https://github.com/appsecco/dvna](https://github.com/appsecco/dvna) |
-| 48 | source-matched DVNA | `appsecco/dvna:sqlite` | [https://github.com/appsecco/dvna](https://github.com/appsecco/dvna) |
+| 47 | DVNA | `securitytestinglab/snapshot-appsecco-dvna-sqlite:20260622` | [https://github.com/appsecco/dvna](https://github.com/appsecco/dvna) |
+| 48 | source-matched DVNA | `securitytestinglab/snapshot-appsecco-dvna-sqlite:20260622` | [https://github.com/appsecco/dvna](https://github.com/appsecco/dvna) |
 | 49 | Django.nV | `securitytestinglab/django-nv-target:local` | [https://github.com/anxolerd/dvpwa](https://github.com/anxolerd/dvpwa) |
 | 50 | Vulpy | `securitytestinglab/vulpy-target:local` | [https://github.com/fportantier/vulpy](https://github.com/fportantier/vulpy) |
 | 51 | QuickerSite Classic ASP health | `version not specified` | local/source-mirrored Classic ASP QuickerSite target |
 | 52 | ASP VBScript CMS | `version not specified` | local/source-mirrored Classic ASP VBScript CMS target |
 | 53 | patched exploration CMS | `version not specified` | local patched IIS exploration site |
-| 54 | XVWA | `bitnetsecdave/xvwa:latest` | [https://github.com/s4n7h0/xvwa](https://github.com/s4n7h0/xvwa) |
-| 55 | WackoPicko | `adamdoupe/wackopicko:latest` | [https://github.com/adamdoupe/WackoPicko](https://github.com/adamdoupe/WackoPicko) |
-| 56 | Hackazon | `pierrickv/hackazon:latest` | [https://github.com/rapid7/hackazon](https://github.com/rapid7/hackazon) |
+| 54 | XVWA | `securitytestinglab/snapshot-bitnetsecdave-xvwa-latest:20260622` | [https://github.com/s4n7h0/xvwa](https://github.com/s4n7h0/xvwa) |
+| 55 | WackoPicko | `securitytestinglab/snapshot-adamdoupe-wackopicko-latest:20260622` | [https://github.com/adamdoupe/WackoPicko](https://github.com/adamdoupe/WackoPicko) |
+| 56 | Hackazon | `securitytestinglab/snapshot-pierrickv-hackazon-latest:20260622` | [https://github.com/rapid7/hackazon](https://github.com/rapid7/hackazon) |
 | 57 | Headers static leak fixture | `version not specified` | local lab fixture source |
 | 58 | JWT auth fixture | `version not specified` | local lab fixture source |
-| 59 | Cache deception fixture | `varnish:7.5-alpine` | [https://hub.docker.com/_/varnish](https://hub.docker.com/_/varnish) |
+| 59 | Cache deception fixture | `securitytestinglab/snapshot-varnish-7-5-alpine:20260622` | [https://hub.docker.com/_/varnish](https://hub.docker.com/_/varnish) |
 | 60 | WAF bypass shape fixture | `version not specified` | local lab fixture source |
 | 61 | SOAP WSDL fixture | `version not specified` | local lab fixture source |
 | 62 | Internal OOB callback fixture | `version not specified` | local lab fixture source |

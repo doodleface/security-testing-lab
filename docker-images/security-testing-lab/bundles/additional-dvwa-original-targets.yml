@@ -1,14 +1,16 @@
 services:
   dvwa-additional-mysql:
-    image: mysql:5.7
+    image: securitytestinglab/snapshot-mysql-5-7:20260622
     container_name: securitytestinglab-dvwa-additional-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DVWA_ADDITIONAL_DB_ROOT_PASSWORD:?set target-local secret value}
+      MYSQL_ROOT_PASSWORD: ${DVWA_ADDITIONAL_DB_ROOT_PASSWORD:?set target-local secret
+        value}
     volumes:
-      - ./mysql-init:/docker-entrypoint-initdb.d:ro
-      - dvwa_additional_mysql:/var/lib/mysql
-
+    - ./mysql-init:/docker-entrypoint-initdb.d:ro
+    - dvwa_additional_mysql:/var/lib/mysql
+    build:
+      context: ./external-images/snapshot-mysql-5-7
   sqli-labs:
     build:
       context: ./sqli-labs
@@ -17,10 +19,9 @@ services:
     container_name: securitytestinglab-sqli-labs
     restart: unless-stopped
     depends_on:
-      - dvwa-additional-mysql
+    - dvwa-additional-mysql
     ports:
-      - "0.0.0.0:18150:80"
-
+    - 0.0.0.0:18150:80
   owasp-bricks:
     build:
       context: ./owasp-bricks
@@ -29,10 +30,9 @@ services:
     container_name: securitytestinglab-owasp-bricks
     restart: unless-stopped
     depends_on:
-      - dvwa-additional-mysql
+    - dvwa-additional-mysql
     ports:
-      - "0.0.0.0:18151:80"
-
+    - 0.0.0.0:18151:80
   peruggia:
     build:
       context: ./peruggia
@@ -41,8 +41,7 @@ services:
     container_name: securitytestinglab-peruggia
     restart: unless-stopped
     ports:
-      - "0.0.0.0:18152:80"
-
+    - 0.0.0.0:18152:80
   upload-labs:
     build:
       context: ./upload-labs
@@ -51,8 +50,7 @@ services:
     container_name: securitytestinglab-upload-labs
     restart: unless-stopped
     ports:
-      - "0.0.0.0:18153:80"
-
+    - 0.0.0.0:18153:80
   xss-labs:
     build:
       context: ./xss-labs
@@ -61,8 +59,7 @@ services:
     container_name: securitytestinglab-xss-labs
     restart: unless-stopped
     ports:
-      - "0.0.0.0:18154:80"
-
+    - 0.0.0.0:18154:80
   google-gruyere:
     build:
       context: ./google-gruyere
@@ -71,8 +68,7 @@ services:
     container_name: securitytestinglab-google-gruyere
     restart: unless-stopped
     ports:
-      - "0.0.0.0:18155:8008"
-
+    - 0.0.0.0:18155:8008
   security-ninjas:
     build:
       context: ./security-ninjas
@@ -80,8 +76,7 @@ services:
     container_name: securitytestinglab-security-ninjas
     restart: unless-stopped
     ports:
-      - "0.0.0.0:18156:80"
-
+    - 0.0.0.0:18156:80
   bodgeit-store:
     build:
       context: ./bodgeit
@@ -90,8 +85,7 @@ services:
     container_name: securitytestinglab-bodgeit-store
     restart: unless-stopped
     ports:
-      - "0.0.0.0:18157:8080"
-
+    - 0.0.0.0:18157:8080
   altoroj:
     build:
       context: ./altoroj
@@ -99,23 +93,22 @@ services:
     container_name: securitytestinglab-altoroj
     restart: unless-stopped
     ports:
-      - "0.0.0.0:18158:8080"
-
+    - 0.0.0.0:18158:8080
   vulnado-db:
-    image: postgres:12
+    image: securitytestinglab/snapshot-postgres-12:20260622
     container_name: securitytestinglab-vulnado-db
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: ${VULNADO_POSTGRES_PASSWORD:?set target-local secret value}
       POSTGRES_DB: vulnado
-
+    build:
+      context: ./external-images/snapshot-postgres-12
   vulnado-internal-site:
     build:
       context: ./vulnado/internal_site
     image: securitytestinglab/vulnado-internal-site:local
     container_name: securitytestinglab-vulnado-internal-site
     restart: unless-stopped
-
   vulnado:
     build:
       context: ./vulnado
@@ -124,8 +117,8 @@ services:
     container_name: securitytestinglab-vulnado
     restart: unless-stopped
     depends_on:
-      - vulnado-db
-      - vulnado-internal-site
+    - vulnado-db
+    - vulnado-internal-site
     environment:
       PGPASSWORD: ${VULNADO_POSTGRES_PASSWORD:?set target-local secret value}
       PGDATABASE: vulnado
@@ -133,7 +126,6 @@ services:
       PGUSER: postgres
       INTERNAL_SITE: vulnado-internal-site
     ports:
-      - "0.0.0.0:18159:8080"
-
+    - 0.0.0.0:18159:8080
 volumes:
   dvwa_additional_mysql: {}

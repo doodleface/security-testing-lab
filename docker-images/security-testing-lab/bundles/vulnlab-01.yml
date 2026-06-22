@@ -1,23 +1,29 @@
 version: '3.8'
 services:
   xvwa:
-    image: bitnetsecdave/xvwa:latest
+    image: securitytestinglab/snapshot-bitnetsecdave-xvwa-latest:20260622
     container_name: ct-vulnlab-xvwa
     restart: unless-stopped
     ports:
     - 18101:80
+    build:
+      context: ./external-images/snapshot-bitnetsecdave-xvwa-latest
   wackopicko:
-    image: adamdoupe/wackopicko:latest
+    image: securitytestinglab/snapshot-adamdoupe-wackopicko-latest:20260622
     container_name: ct-vulnlab-wackopicko
     restart: unless-stopped
     ports:
     - 18102:80
+    build:
+      context: ./external-images/snapshot-adamdoupe-wackopicko-latest
   hackazon:
-    image: pierrickv/hackazon:latest
+    image: securitytestinglab/snapshot-pierrickv-hackazon-latest:20260622
     container_name: ct-vulnlab-hackazon
     restart: unless-stopped
     ports:
     - 18103:80
+    build:
+      context: ./external-images/snapshot-pierrickv-hackazon-latest
   headers-static-fixture:
     build: ./fixture-app
     container_name: ct-vulnlab-headers-static
@@ -49,7 +55,7 @@ services:
     - '8080'
     image: securitytestinglab/vulnlab-01-cache-origin:local
   cache-varnish:
-    image: varnish:7.5-alpine
+    image: securitytestinglab/snapshot-varnish-7-5-alpine:20260622
     container_name: ct-vulnlab-cache-varnish
     restart: unless-stopped
     depends_on:
@@ -67,6 +73,8 @@ services:
     - malloc,128m
     ports:
     - 18112:80
+    build:
+      context: ./external-images/snapshot-varnish-7-5-alpine
   waf-fixture:
     build: ./fixture-app
     container_name: ct-vulnlab-waf

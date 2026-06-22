@@ -1,39 +1,43 @@
-version: "2.4"
-
+version: '2.4'
 services:
   dvga-holdout:
-    image: dolevf/dvga:latest
+    image: securitytestinglab/snapshot-dolevf-dvga-latest:20260622
     container_name: dvga-holdout
     restart: unless-stopped
     environment:
-      - WEB_HOST=0.0.0.0
-      - WEB_PORT=5013
+    - WEB_HOST=0.0.0.0
+    - WEB_PORT=5013
     ports:
-      - "0.0.0.0:5013:5013"
-
+    - 0.0.0.0:5013:5013
+    build:
+      context: ./external-images/snapshot-dolevf-dvga-latest
   webgoat-webwolf:
-    image: webgoat/webgoat:latest
+    image: securitytestinglab/snapshot-webgoat-webgoat-latest:20260622
     container_name: webgoat-webwolf
     restart: unless-stopped
     healthcheck:
       disable: true
     ports:
-      - "0.0.0.0:8081:8080"
-      - "0.0.0.0:9090:9090"
+    - 0.0.0.0:8081:8080
+    - 0.0.0.0:9090:9090
     environment:
-      - TZ=UTC
-
+    - TZ=UTC
+    build:
+      context: ./external-images/snapshot-webgoat-webgoat-latest
   dvws:
-    image: tssoffsec/dvws:latest
+    image: securitytestinglab/snapshot-tssoffsec-dvws-latest:20260622
     container_name: dvws
     restart: unless-stopped
     ports:
-      - "0.0.0.0:8082:80"
-      - "0.0.0.0:8084:8080"
-
+    - 0.0.0.0:8082:80
+    - 0.0.0.0:8084:8080
+    build:
+      context: ./external-images/snapshot-tssoffsec-dvws-latest
   bwapp:
-    image: raesene/bwapp:latest
+    image: securitytestinglab/snapshot-raesene-bwapp-latest:20260622
     container_name: bwapp
     restart: unless-stopped
     ports:
-      - "0.0.0.0:8083:80"
+    - 0.0.0.0:8083:80
+    build:
+      context: ./external-images/snapshot-raesene-bwapp-latest

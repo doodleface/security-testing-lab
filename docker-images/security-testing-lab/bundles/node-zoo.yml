@@ -8,23 +8,26 @@ services:
     environment:
       NODE_ENV: production
       MONGODB_URI: mongodb://nodegoat-mongo:27017/nodegoat
-    command: sh -c "until nc -z -w 2 nodegoat-mongo 27017 && echo mongo is ready for connections && node artifacts/db-reset.js && npm start; do sleep 2; done"
+    command: sh -c "until nc -z -w 2 nodegoat-mongo 27017 && echo mongo is ready for
+      connections && node artifacts/db-reset.js && npm start; do sleep 2; done"
     ports:
-      - "0.0.0.0:4000:4000"
+    - 0.0.0.0:4000:4000
     depends_on:
-      - nodegoat-mongo
-
+    - nodegoat-mongo
   nodegoat-mongo:
-    image: mongo:4.4
+    image: securitytestinglab/snapshot-mongo-4-4:20260622
     container_name: securitytestinglab-nodegoat-mongo
     restart: unless-stopped
     user: mongodb
     expose:
-      - "27017"
-
+    - '27017'
+    build:
+      context: ./external-images/snapshot-mongo-4-4
   dvna:
-    image: appsecco/dvna:sqlite
+    image: securitytestinglab/snapshot-appsecco-dvna-sqlite:20260622
     container_name: securitytestinglab-dvna
     restart: unless-stopped
     ports:
-      - "0.0.0.0:9090:9090"
+    - 0.0.0.0:9090:9090
+    build:
+      context: ./external-images/snapshot-appsecco-dvna-sqlite

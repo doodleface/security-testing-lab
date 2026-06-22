@@ -1,34 +1,45 @@
 services:
   database:
-    image: webpwnized/mutillidae:database-2.12.5
+    image: securitytestinglab/snapshot-webpwnized-mutillidae-database-2-12-5:20260622
     container_name: securitytestinglab-mutillidae-database
     restart: unless-stopped
-
+    build:
+      context: ./external-images/snapshot-webpwnized-mutillidae-database-2-12-5
   mutillidae:
-    image: webpwnized/mutillidae:www-2.12.5
+    image: securitytestinglab/snapshot-webpwnized-mutillidae-www-2-12-5:20260622
     container_name: securitytestinglab-mutillidae
     restart: unless-stopped
     depends_on:
-      - database
+    - database
     ports:
-      - "0.0.0.0:8085:80"
-
+    - 0.0.0.0:8085:80
+    build:
+      context: ./external-images/snapshot-webpwnized-mutillidae-www-2-12-5
   railsgoat:
-    image: owasp/railsgoat:main
+    image: securitytestinglab/snapshot-owasp-railsgoat-main:20260622
     container_name: securitytestinglab-railsgoat
     restart: unless-stopped
-    command: ["/bin/bash", "-lc", "rm -f tmp/pids/server.pid && bundle exec rails db:prepare && bundle exec rails s -p 3000 -b 0.0.0.0"]
+    command:
+    - /bin/bash
+    - -lc
+    - rm -f tmp/pids/server.pid && bundle exec rails db:prepare && bundle exec rails
+      s -p 3000 -b 0.0.0.0
     ports:
-      - "0.0.0.0:3001:3000"
-
+    - 0.0.0.0:3001:3000
+    build:
+      context: ./external-images/snapshot-owasp-railsgoat-main
   benchmarkjava:
-    image: owasp/benchmark:latest
+    image: securitytestinglab/snapshot-owasp-benchmark-latest:20260622
     container_name: securitytestinglab-benchmarkjava
     restart: unless-stopped
-    command: ["/bin/bash", "-lc", "cd /owasp/BenchmarkJava && ./runRemoteAccessibleBenchmark.sh"]
+    command:
+    - /bin/bash
+    - -lc
+    - cd /owasp/BenchmarkJava && ./runRemoteAccessibleBenchmark.sh
     ports:
-      - "0.0.0.0:8443:8443"
-
+    - 0.0.0.0:8443:8443
+    build:
+      context: ./external-images/snapshot-owasp-benchmark-latest
   spring-petclinic:
     build:
       context: ./spring-petclinic
@@ -37,4 +48,4 @@ services:
     container_name: securitytestinglab-spring-petclinic
     restart: unless-stopped
     ports:
-      - "0.0.0.0:8086:8080"
+    - 0.0.0.0:8086:8080

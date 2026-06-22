@@ -1,10 +1,12 @@
 services:
   dvga:
-    image: dolevf/dvga
+    image: securitytestinglab/snapshot-dolevf-dvga-latest:20260622
     container_name: securitytestinglab-dvga
     restart: unless-stopped
     environment:
       WEB_HOST: 0.0.0.0
       WEB_PORT: 5013
     ports:
-      - "${DVGA_BIND_HOST:-0.0.0.0}:${DVGA_PORT:-5013}:5013"
+    - ${DVGA_BIND_HOST:-0.0.0.0}:${DVGA_PORT:-5013}:5013
+    build:
+      context: ./external-images/snapshot-dolevf-dvga-latest

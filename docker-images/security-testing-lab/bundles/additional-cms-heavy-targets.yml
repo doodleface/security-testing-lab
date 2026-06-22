@@ -1,27 +1,30 @@
 services:
   old-phpmyadmin-db:
-    image: mysql:5.7
+    image: securitytestinglab/snapshot-mysql-5-7:20260622
     container_name: securitytestinglab-old-phpmyadmin-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${OLD_PHPMYADMIN_DB_ROOT_PASSWORD:?set target-local secret value}
+      MYSQL_ROOT_PASSWORD: ${OLD_PHPMYADMIN_DB_ROOT_PASSWORD:?set target-local secret
+        value}
     volumes:
-      - old_phpmyadmin_db:/var/lib/mysql
-
+    - old_phpmyadmin_db:/var/lib/mysql
+    build:
+      context: ./external-images/snapshot-mysql-5-7
   old-phpmyadmin:
-    image: phpmyadmin/phpmyadmin:4.8
+    image: securitytestinglab/snapshot-phpmyadmin-phpmyadmin-4-8:20260622
     container_name: securitytestinglab-old-phpmyadmin
     restart: unless-stopped
     depends_on:
-      - old-phpmyadmin-db
+    - old-phpmyadmin-db
     environment:
       PMA_HOST: old-phpmyadmin-db
-      PMA_ARBITRARY: "1"
+      PMA_ARBITRARY: '1'
     ports:
-      - "0.0.0.0:18162:80"
-
+    - 0.0.0.0:18162:80
+    build:
+      context: ./external-images/snapshot-phpmyadmin-phpmyadmin-4-8
   joomla-vuln-db:
-    image: mysql:5.7
+    image: securitytestinglab/snapshot-mysql-5-7:20260622
     container_name: securitytestinglab-joomla-vuln-db
     restart: unless-stopped
     environment:
@@ -30,24 +33,26 @@ services:
       MYSQL_PASSWORD: ${JOOMLA_DB_PASSWORD:?set target-local secret value}
       MYSQL_ROOT_PASSWORD: ${JOOMLA_DB_ROOT_PASSWORD:?set target-local secret value}
     volumes:
-      - joomla_db:/var/lib/mysql
-
+    - joomla_db:/var/lib/mysql
+    build:
+      context: ./external-images/snapshot-mysql-5-7
   joomla-vuln:
-    image: joomla:3.9.0-php7.2-apache
+    image: securitytestinglab/snapshot-joomla-3-9-0-php7-2-apache:20260622
     container_name: securitytestinglab-joomla-vuln
     restart: unless-stopped
     depends_on:
-      - joomla-vuln-db
+    - joomla-vuln-db
     environment:
       JOOMLA_DB_HOST: joomla-vuln-db
       JOOMLA_DB_USER: joomla
       JOOMLA_DB_PASSWORD: ${JOOMLA_DB_PASSWORD:?set target-local secret value}
       JOOMLA_DB_NAME: joomla
     ports:
-      - "0.0.0.0:18163:80"
+    - 0.0.0.0:18163:80
     volumes:
-      - joomla_app:/var/www/html
-
+    - joomla_app:/var/www/html
+    build:
+      context: ./external-images/snapshot-joomla-3-9-0-php7-2-apache
   vulnerable-wordpress:
     build:
       context: ./vulnerable-wordpress
@@ -55,11 +60,10 @@ services:
     container_name: securitytestinglab-vulnerable-wordpress-plugin-lab
     restart: unless-stopped
     ports:
-      - "0.0.0.0:18165:80"
+    - 0.0.0.0:18165:80
     volumes:
-      - vulnerable_wordpress_db:/var/lib/mysql
-      - vulnerable_wordpress_app:/var/www
-
+    - vulnerable_wordpress_db:/var/lib/mysql
+    - vulnerable_wordpress_app:/var/www
 volumes:
   old_phpmyadmin_db: {}
   joomla_db: {}
