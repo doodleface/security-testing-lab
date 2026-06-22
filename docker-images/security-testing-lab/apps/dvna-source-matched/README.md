@@ -4,7 +4,7 @@ Runtime URL: http://10.190.190.97:19090/
 Runtime host: ct-target-node-zoo
 Source reference: target-app-repos/dvna
 Docker asset: docker-images/security-testing-lab/bundles/ct-target-node-zoo
-Compose reference: bundles/ct-target-node-zoo/docker-compose.yml
+Compose reference: bundles/node-zoo.yml
 Compose service: dvna
 Default port: 19090
 Internal port: 9090

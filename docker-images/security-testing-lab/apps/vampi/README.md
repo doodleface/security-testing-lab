@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.92:5000/
 Runtime host: ct-target-appsuite
 Source reference: target-app-repos/vampi
-Docker asset: docker-images/security-testing-lab/bundles/runtime-targets/appsuite.yml
-Compose reference: bundles/runtime-targets/appsuite.yml
+Docker asset: docker-images/security-testing-lab/bundles/appsuite.yml
+Compose reference: bundles/appsuite.yml
 Compose service: vampi
 Default port: 5000
 Internal port: 5000

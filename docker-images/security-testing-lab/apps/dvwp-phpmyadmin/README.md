@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.96:18141/
 Runtime host: ct-target-legacy-web-zoo
 Source reference: target-app-repos/dvwp
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-legacy-web-zoo/additional-enterprise-cms-targets.yml
-Compose reference: bundles/ct-target-legacy-web-zoo/additional-enterprise-cms-targets.yml
+Docker asset: docker-images/security-testing-lab/bundles/additional-enterprise-cms-targets.yml
+Compose reference: bundles/additional-enterprise-cms-targets.yml
 Compose service: dvwp-phpmyadmin
 Default port: 18141
 Internal port: 80

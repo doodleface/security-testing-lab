@@ -3,8 +3,8 @@
 Runtime URL: https://10.190.190.94:9443/
 Runtime host: ct-target-protocol-lab
 Source reference: tests/fixtures/runtime_targets/protocol_lab/h2_lab
-Docker asset: docker-images/security-testing-lab/bundles/protocol-lab/docker-compose.yml
-Compose reference: bundles/protocol-lab/docker-compose.yml
+Docker asset: docker-images/security-testing-lab/bundles/protocol-lab.yml
+Compose reference: bundles/protocol-lab.yml
 Compose service: h2-lab
 Default port: 9443
 Internal port: 9443

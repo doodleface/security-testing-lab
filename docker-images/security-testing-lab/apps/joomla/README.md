@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.96:18163/
 Runtime host: ct-target-legacy-web-zoo
 Source reference: target-app-repos/joomla-cms
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-legacy-web-zoo/additional-cms-heavy-targets.yml
-Compose reference: bundles/ct-target-legacy-web-zoo/additional-cms-heavy-targets.yml
+Docker asset: docker-images/security-testing-lab/bundles/additional-cms-heavy-targets.yml
+Compose reference: bundles/additional-cms-heavy-targets.yml
 Compose service: joomla-vuln
 Default port: 18163
 Internal port: 80

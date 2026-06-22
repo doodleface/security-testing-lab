@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.96:8085/
 Runtime host: ct-target-legacy-web-zoo
 Source reference: target-app-repos/mutillidae
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-legacy-web-zoo/docker-compose.yml
-Compose reference: bundles/ct-target-legacy-web-zoo/docker-compose.yml
+Docker asset: docker-images/security-testing-lab/bundles/legacy-web-zoo.yml
+Compose reference: bundles/legacy-web-zoo.yml
 Compose service: mutillidae
 Default port: 8085
 Internal port: 80

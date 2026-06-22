@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.99:18103/
 Runtime host: ct-vulnlab-01
 Source reference: target-app-repos/hackazon
-Docker asset: docker-images/security-testing-lab/bundles/ct-vulnlab-01/docker-compose.yml
-Compose reference: bundles/ct-vulnlab-01/docker-compose.yml
+Docker asset: docker-images/security-testing-lab/bundles/vulnlab-01.yml
+Compose reference: bundles/vulnlab-01.yml
 Compose service: hackazon
 Default port: 18103
 Internal port: 80

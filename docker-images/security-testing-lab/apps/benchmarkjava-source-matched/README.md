@@ -3,8 +3,8 @@
 Runtime URL: https://10.190.190.96:18443/benchmark/
 Runtime host: ct-target-legacy-web-zoo
 Source reference: target-app-repos/deployed-ct-target-legacy-web-zoo/securitytestinglab-targets/legacy-web-zoo/benchmarkjava-source-matched
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-legacy-web-zoo/docker-compose.yml
-Compose reference: bundles/ct-target-legacy-web-zoo/docker-compose.yml
+Docker asset: docker-images/security-testing-lab/bundles/legacy-web-zoo.yml
+Compose reference: bundles/legacy-web-zoo.yml
 Compose service: benchmarkjava
 Default port: 18443
 Internal port: 8443

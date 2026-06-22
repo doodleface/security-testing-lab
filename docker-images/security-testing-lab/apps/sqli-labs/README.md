@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.91:18150/
 Runtime host: ct-target-dvwa
 Source reference: target-app-repos/deployed-ct-target-dvwa/securitytestinglab-targets/dvwa-additional/sqli-labs
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-dvwa-additional/additional-dvwa-original-targets.yml
-Compose reference: bundles/ct-target-dvwa-additional/additional-dvwa-original-targets.yml
+Docker asset: docker-images/security-testing-lab/bundles/additional-dvwa-original-targets.yml
+Compose reference: bundles/additional-dvwa-original-targets.yml
 Compose service: sqli-labs
 Default port: 18150
 Internal port: 80

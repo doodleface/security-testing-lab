@@ -1,7 +1,0 @@
-services:
-  dvwa:
-    image: vulnerables/web-dvwa
-    container_name: securitytestinglab-dvwa
-    restart: unless-stopped
-    ports:
-      - "${DVWA_BIND_HOST:-0.0.0.0}:${DVWA_PORT:-8080}:80"

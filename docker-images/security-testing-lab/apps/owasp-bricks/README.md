@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.91:18151/
 Runtime host: ct-target-dvwa
 Source reference: target-app-repos/deployed-ct-target-dvwa/securitytestinglab-targets/dvwa-additional/owasp-bricks
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-dvwa-additional/additional-dvwa-original-targets.yml
-Compose reference: bundles/ct-target-dvwa-additional/additional-dvwa-original-targets.yml
+Docker asset: docker-images/security-testing-lab/bundles/additional-dvwa-original-targets.yml
+Compose reference: bundles/additional-dvwa-original-targets.yml
 Compose service: owasp-bricks
 Default port: 18151
 Internal port: 80

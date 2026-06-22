@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.95:18080/api/items
 Runtime host: ct-target-holdout
 Source reference: generated compatible fixture because target-local source was unavailable noninteractively
-Docker asset: docker-images/security-testing-lab/bundles/auth-boundary-lab/docker-compose.yml
-Compose reference: bundles/auth-boundary-lab/docker-compose.yml
+Docker asset: docker-images/security-testing-lab/bundles/auth-boundary-lab.yml
+Compose reference: bundles/auth-boundary-lab.yml
 Compose service: auth-boundary-lab
 Default port: 18080
 Internal port: 8080

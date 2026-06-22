@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.91:18156/
 Runtime host: ct-target-dvwa
 Source reference: target-app-repos/deployed-ct-target-dvwa/securitytestinglab-targets/dvwa-additional/security-ninjas
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-dvwa-additional/additional-dvwa-original-targets.yml
-Compose reference: bundles/ct-target-dvwa-additional/additional-dvwa-original-targets.yml
+Docker asset: docker-images/security-testing-lab/bundles/additional-dvwa-original-targets.yml
+Compose reference: bundles/additional-dvwa-original-targets.yml
 Compose service: security-ninjas
 Default port: 18156
 Internal port: 80

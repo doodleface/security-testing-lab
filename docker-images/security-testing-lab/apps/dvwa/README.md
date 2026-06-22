@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.91:8080/
 Runtime host: ct-target-dvwa
 Source reference: target-app-repos/dvwa
-Docker asset: docker-images/security-testing-lab/bundles/runtime-targets/dvwa.yml
-Compose reference: bundles/runtime-targets/dvwa.yml
+Docker asset: docker-images/security-testing-lab/bundles/dvwa.yml
+Compose reference: bundles/dvwa.yml
 Compose service: dvwa
 Default port: 8080
 Internal port: 80

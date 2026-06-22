@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.96:18162/
 Runtime host: ct-target-legacy-web-zoo
 Source reference: target-app-repos/phpmyadmin
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-legacy-web-zoo/additional-cms-heavy-targets.yml
-Compose reference: bundles/ct-target-legacy-web-zoo/additional-cms-heavy-targets.yml
+Docker asset: docker-images/security-testing-lab/bundles/additional-cms-heavy-targets.yml
+Compose reference: bundles/additional-cms-heavy-targets.yml
 Compose service: old-phpmyadmin
 Default port: 18162
 Internal port: 80

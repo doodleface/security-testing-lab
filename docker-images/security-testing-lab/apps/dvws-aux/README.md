@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.95:8084/
 Runtime host: ct-target-holdout
 Source reference: target-app-repos/dvws
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-holdout/section40-holdout-apps.yml
-Compose reference: bundles/ct-target-holdout/section40-holdout-apps.yml
+Docker asset: docker-images/security-testing-lab/bundles/section40-holdout-apps.yml
+Compose reference: bundles/section40-holdout-apps.yml
 Compose service: dvws
 Default port: 8084
 Internal port: 8080

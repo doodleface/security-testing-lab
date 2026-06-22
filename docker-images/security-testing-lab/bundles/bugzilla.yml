@@ -1,0 +1,9 @@
+services:
+  bugzilla:
+    image: securitytestinglab/bugzilla:local
+    build:
+      context: ./bugzilla
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${BUGZILLA_BIND_HOST:-0.0.0.0}:${BUGZILLA_PORT:-18095}:80"

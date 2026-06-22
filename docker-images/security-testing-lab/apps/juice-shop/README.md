@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.92:3000/
 Runtime host: ct-target-appsuite
 Source reference: target-app-repos/juice-shop
-Docker asset: docker-images/security-testing-lab/bundles/runtime-targets/appsuite.yml
-Compose reference: bundles/runtime-targets/appsuite.yml
+Docker asset: docker-images/security-testing-lab/bundles/appsuite.yml
+Compose reference: bundles/appsuite.yml
 Compose service: juice-shop
 Default port: 3000
 Internal port: 3000

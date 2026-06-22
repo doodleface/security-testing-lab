@@ -1,0 +1,9 @@
+services:
+  lanraragi:
+    image: securitytestinglab/lanraragi:local
+    build:
+      context: ./lanraragi
+      dockerfile: .devcontainer/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${LANRARAGI_BIND_HOST:-0.0.0.0}:${LANRARAGI_PORT:-18096}:3000"

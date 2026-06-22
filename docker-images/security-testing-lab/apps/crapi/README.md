@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.95:8888/
 Runtime host: ct-target-holdout
 Source reference: target-app-repos/deployed-ct-target-holdout/section40-holdout-lab
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-holdout/crapi-compose.yml
-Compose reference: bundles/ct-target-holdout/crapi-compose.yml
+Docker asset: docker-images/security-testing-lab/bundles/crapi-compose.yml
+Compose reference: bundles/crapi-compose.yml
 Compose service: crapi-web
 Default port: 8888
 Internal port: 80

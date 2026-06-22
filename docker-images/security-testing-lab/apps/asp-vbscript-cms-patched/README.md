@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.98:18100/
 Runtime host: ct-target-classic-asp
 Source reference: target-app-repos/deployed-ct-target-classic-asp
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-classic-asp/docker-compose.yml
-Compose reference: bundles/ct-target-classic-asp/docker-compose.yml
+Docker asset: docker-images/security-testing-lab/bundles/classic-asp.yml
+Compose reference: bundles/classic-asp.yml
 Compose service: asp-vbscript-cms-patched
 Default port: 18100
 Internal port: 80

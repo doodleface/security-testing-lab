@@ -3,8 +3,8 @@
 Runtime URL: http://10.190.190.97:18124/
 Runtime host: ct-target-node-zoo
 Source reference: target-app-repos/deployed-ct-target-node-zoo/securitytestinglab-targets/node-zoo/vulpy
-Docker asset: docker-images/security-testing-lab/bundles/ct-target-node-zoo/additional-python-targets.yml
-Compose reference: bundles/ct-target-node-zoo/additional-python-targets.yml
+Docker asset: docker-images/security-testing-lab/bundles/additional-python-targets.yml
+Compose reference: bundles/additional-python-targets.yml
 Compose service: vulpy
 Default port: 18124
 Internal port: 5000
