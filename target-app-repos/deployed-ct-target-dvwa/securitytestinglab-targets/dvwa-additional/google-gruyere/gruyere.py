@@ -750,12 +750,21 @@ class GruyereRequestHandler(BaseHTTPRequestHandler):
    #Network Security settings
 
     allowed_ips = ['127.0.0.1']
+    allowed_ip_prefixes = (
+        '10.',
+        '192.168.',
+        '172.16.', '172.17.', '172.18.', '172.19.',
+        '172.20.', '172.21.', '172.22.', '172.23.',
+        '172.24.', '172.25.', '172.26.', '172.27.',
+        '172.28.', '172.29.', '172.30.', '172.31.',
+    )
 
-    request_ip = self.client_address[0]                      
-    if request_ip not in allowed_ips:                        
-      print((                                  
-          'DANGER! Request from bad ip: ' + request_ip), file=sys.stderr)      
-      _Exit('bad_ip')                                        
+    request_ip = self.client_address[0]
+    if (request_ip not in allowed_ips
+        and not request_ip.startswith(allowed_ip_prefixes)):
+      print((
+          'DANGER! Request from bad ip: ' + request_ip), file=sys.stderr)
+      _Exit('bad_ip')
 
     if (server_unique_id not in path                         
         and path != '/favicon.ico'):                         
